@@ -1,0 +1,2066 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<meta name="theme-color"
+      content="#655cf6">
+
+<title>EVR Portuguese</title>
+
+<style>
+
+/* =========================
+   BASIC
+========================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #f3f5f9;
+    color: #172033;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.app {
+    width: 100%;
+    max-width: 480px;
+    min-height: 100vh;
+    margin: auto;
+    background: white;
+    box-shadow: 0 0 35px rgba(0,0,0,.08);
+}
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+    padding: 18px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 5px 15px rgba(0,0,0,.15);
+}
+
+.logo-text {
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.logo-text span {
+    color: #655cf6;
+}
+
+.badge {
+    display: inline-block;
+    padding: 7px 11px;
+    border-radius: 20px;
+    background: #eeedff;
+    color: #554be1;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+/* =========================
+   SCREENS
+========================= */
+
+.screen {
+    padding: 18px 20px 100px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+h1 {
+    font-size: 30px;
+    line-height: 1.15;
+    margin: 14px 0 8px;
+}
+
+h2 {
+    margin: 8px 0 13px;
+}
+
+p {
+    line-height: 1.5;
+}
+
+.muted {
+    color: #718096;
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.card {
+    border: 1px solid #e5e8ee;
+    border-radius: 18px;
+    padding: 17px;
+    margin: 12px 0;
+    background: white;
+}
+
+.card-purple {
+    background: #f8f7ff;
+    border-color: #e5e2ff;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.primary {
+    width: 100%;
+    border: none;
+    background: #655cf6;
+    color: white;
+    padding: 15px;
+    border-radius: 13px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+.primary:hover {
+    opacity: .9;
+}
+
+.secondary {
+    border: none;
+    background: #eeedff;
+    color: #554be1;
+    padding: 13px 16px;
+    border-radius: 12px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+/* =========================
+   PROGRESS
+========================= */
+
+.progress {
+    height: 10px;
+    background: #e8ebf2;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #655cf6;
+    transition: width .4s;
+}
+
+/* =========================
+   LESSON
+========================= */
+
+.phrase {
+    background: #fafaff;
+}
+
+.english {
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.portuguese {
+    font-size: 22px;
+    font-weight: 800;
+    color: #655cf6;
+    margin-top: 5px;
+}
+
+.meaning {
+    color: #718096;
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+.speak {
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 50%;
+    background: #eeedff;
+    color: #554be1;
+    font-size: 21px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.speak:active {
+    transform: scale(.94);
+}
+
+/* =========================
+   QUIZ
+========================= */
+
+.option {
+    width: 100%;
+    text-align: left;
+    background: white;
+    border: 1px solid #dfe4ec;
+    padding: 16px;
+    border-radius: 14px;
+    margin: 7px 0;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.option:hover {
+    background: #f8f7ff;
+}
+
+.option.correct {
+    border: 2px solid #36a269;
+    background: #effaf4;
+}
+
+.option.wrong {
+    border: 2px solid #dc6262;
+    background: #fff4f4;
+}
+
+/* =========================
+   COURSE LIST
+========================= */
+
+.lesson-list {
+    display: grid;
+    gap: 10px;
+}
+
+.lesson-item {
+    padding: 16px;
+    border: 1px solid #e5e8ee;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: white;
+}
+
+.lesson-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #eeedff;
+    color: #554be1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 900;
+}
+
+/* =========================
+   NAVIGATION
+========================= */
+
+nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(480px,100%);
+    background: white;
+    border-top: 1px solid #e9ebef;
+    display: flex;
+    justify-content: space-around;
+    padding: 9px 3px;
+    z-index: 50;
+}
+
+nav button {
+    border: none;
+    background: none;
+    color: #7a8494;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+nav button.active {
+    color: #655cf6;
+}
+
+/* =========================
+   TOAST
+========================= */
+
+.toast {
+    position: fixed;
+    bottom: 78px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #172033;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 12px;
+    display: none;
+    z-index: 100;
+    font-weight: 700;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:480px) {
+
+    body {
+        background: white;
+    }
+
+    .app {
+        box-shadow: none;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<div class="app">
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header>
+
+    <div class="brand">
+
+        <!-- APP ICON BUILT DIRECTLY INTO HTML -->
+
+        <div class="logo-icon">
+
+            <svg
+                width="100%"
+                height="100%"
+                viewBox="0 0 100 100"
+                xmlns="http://www.w3.org/2000/svg">
+
+                <defs>
+
+                    <linearGradient
+                        id="bg"
+                        x1="0"
+                        y1="0"
+                        x2="1"
+                        y2="1">
+
+                        <stop
+                            offset="0%"
+                            stop-color="#11aaa0"/>
+
+                        <stop
+                            offset="100%"
+                            stop-color="#087d8d"/>
+
+                    </linearGradient>
+
+                </defs>
+
+                <rect
+                    width="100"
+                    height="100"
+                    rx="20"
+                    fill="url(#bg)"/>
+
+                <!-- EN bubble -->
+
+                <circle
+                    cx="35"
+                    cy="35"
+                    r="25"
+                    fill="white"/>
+
+                <text
+                    x="35"
+                    y="40"
+                    text-anchor="middle"
+                    font-size="17"
+                    font-weight="bold"
+                    fill="#172033">
+
+                    EN
+
+                </text>
+
+                <!-- PT bubble -->
+
+                <circle
+                    cx="67"
+                    cy="55"
+                    r="24"
+                    fill="#61d348"/>
+
+                <text
+                    x="67"
+                    y="61"
+                    text-anchor="middle"
+                    font-size="17"
+                    font-weight="bold"
+                    fill="white">
+
+                    PT
+
+                </text>
+
+                <!-- Translation arrow -->
+
+                <path
+                    d="M43 48 Q50 53 56 55"
+                    stroke="white"
+                    stroke-width="4"
+                    fill="none"/>
+
+                <polygon
+                    points="53,50 62,55 53,60"
+                    fill="white"/>
+
+                <!-- Sound waves -->
+
+                <path
+                    d="M75 18 L75 28"
+                    stroke="white"
+                    stroke-width="3"
+                    stroke-linecap="round"/>
+
+                <path
+                    d="M82 15 L82 31"
+                    stroke="white"
+                    stroke-width="3"
+                    stroke-linecap="round"/>
+
+                <!-- Book -->
+
+                <path
+                    d="M25 78 Q40 70 50 78 Q60 70 75 78 L75 88 Q60 80 50 88 Q40 80 25 88Z"
+                    fill="white"/>
+
+            </svg>
+
+        </div>
+
+
+        <div class="logo-text">
+
+            EVR
+            <span>Portuguese</span>
+
+        </div>
+
+    </div>
+
+
+    <span class="badge">
+        A1
+    </span>
+
+</header>
+
+
+<!-- =====================================================
+     HOME
+===================================================== -->
+
+<section
+    id="home"
+    class="screen">
+
+    <span class="badge">
+
+        🇬🇧 ENGLISH → 🇵🇹 PORTUGUESE
+
+    </span>
+
+
+    <h1>
+
+        Learn European Portuguese
+
+    </h1>
+
+
+    <p class="muted">
+
+        Learn Portuguese through English,
+        step by step, with pronunciation practice.
+
+    </p>
+
+
+    <!-- PROGRESS CARD -->
+
+    <div class="card">
+
+        <div class="row">
+
+            <b>
+                Course progress
+            </b>
+
+            <b id="homePercent">
+                0%
+            </b>
+
+        </div>
+
+
+        <div
+            class="progress"
+            style="margin-top:12px">
+
+            <div
+                id="homeBar"
+                class="progress-bar">
+
+            </div>
+
+        </div>
+
+
+        <p
+            class="muted"
+            id="homeLessons">
+
+            0 of 12 lessons completed
+
+        </p>
+
+    </div>
+
+
+    <h2>
+        A1 Beginner Course
+    </h2>
+
+
+    <!-- CURRENT LESSON -->
+
+    <div class="card card-purple">
+
+        <span class="badge">
+            LESSON 1
+        </span>
+
+
+        <h2>
+            Greetings & Introductions
+        </h2>
+
+
+        <p class="muted">
+
+            Learn the most important
+            greetings in Portuguese.
+
+        </p>
+
+
+        <button
+            class="primary"
+            onclick="show('lesson')">
+
+            Start Lesson →
+
+        </button>
+
+    </div>
+
+
+    <!-- STREAK -->
+
+    <div class="card">
+
+        <div class="row">
+
+            <b>
+                🔥 Learning streak
+            </b>
+
+            <b id="homeStreak">
+                1 day
+            </b>
+
+        </div>
+
+
+        <p class="muted">
+
+            Practice every day to improve
+            your Portuguese.
+
+        </p>
+
+    </div>
+
+
+    <!-- COURSE PREVIEW -->
+
+    <h2>
+        A1 Course
+    </h2>
+
+
+    <div class="lesson-list">
+
+        <div class="lesson-item">
+
+            <div class="lesson-number">
+                1
+            </div>
+
+            <div>
+                <b>Greetings</b>
+                <div class="muted">
+                    Olá, Bom dia...
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="lesson-item">
+
+            <div class="lesson-number">
+                2
+            </div>
+
+            <div>
+                <b>Introducing Yourself</b>
+                <div class="muted">
+                    My name is...
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="lesson-item">
+
+            <div class="lesson-number">
+                3
+            </div>
+
+            <div>
+                <b>Numbers</b>
+                <div class="muted">
+                    One, two, three...
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="lesson-item">
+
+            <div class="lesson-number">
+                4
+            </div>
+
+            <div>
+                <b>Family</b>
+                <div class="muted">
+                    Mother, father...
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     LESSON
+===================================================== -->
+
+<section
+    id="lesson"
+    class="screen hidden">
+
+    <span class="badge">
+
+        LESSON 1 • GREETINGS
+
+    </span>
+
+
+    <h1>
+
+        English → Portuguese
+
+    </h1>
+
+
+    <p class="muted">
+
+        Tap 🔊 to hear the European
+        Portuguese pronunciation.
+
+    </p>
+
+
+    <!-- HELLO -->
+
+    <div class="card phrase">
+
+        <div class="row">
+
+            <div>
+
+                <div class="english">
+                    Hello
+                </div>
+
+                <div class="portuguese">
+                    Olá
+                </div>
+
+                <div class="meaning">
+                    A common greeting.
+                </div>
+
+            </div>
+
+
+            <button
+                class="speak"
+                onclick="speak('Olá')">
+
+                🔊
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- GOOD MORNING -->
+
+    <div class="card phrase">
+
+        <div class="row">
+
+            <div>
+
+                <div class="english">
+                    Good morning
+                </div>
+
+                <div class="portuguese">
+                    Bom dia
+                </div>
+
+                <div class="meaning">
+                    Used in the morning.
+                </div>
+
+            </div>
+
+
+            <button
+                class="speak"
+                onclick="speak('Bom dia')">
+
+                🔊
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- GOOD AFTERNOON -->
+
+    <div class="card phrase">
+
+        <div class="row">
+
+            <div>
+
+                <div class="english">
+                    Good afternoon
+                </div>
+
+                <div class="portuguese">
+                    Boa tarde
+                </div>
+
+                <div class="meaning">
+                    Used in the afternoon.
+                </div>
+
+            </div>
+
+
+            <button
+                class="speak"
+                onclick="speak('Boa tarde')">
+
+                🔊
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- GOOD NIGHT -->
+
+    <div class="card phrase">
+
+        <div class="row">
+
+            <div>
+
+                <div class="english">
+                    Good night
+                </div>
+
+                <div class="portuguese">
+                    Boa noite
+                </div>
+
+                <div class="meaning">
+                    Used in the evening or at night.
+                </div>
+
+            </div>
+
+
+            <button
+                class="speak"
+                onclick="speak('Boa noite')">
+
+                🔊
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- HOW ARE YOU -->
+
+    <div class="card phrase">
+
+        <div class="row">
+
+            <div>
+
+                <div class="english">
+                    How are you?
+                </div>
+
+                <div class="portuguese">
+                    Como está?
+                </div>
+
+                <div class="meaning">
+                    Polite/formal expression.
+                </div>
+
+            </div>
+
+
+            <button
+                class="speak"
+                onclick="speak('Como está?')">
+
+                🔊
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- THANK YOU -->
+
+    <div class="card phrase">
+
+        <div class="row">
+
+            <div>
+
+                <div class="english">
+                    Thank you
+                </div>
+
+                <div class="portuguese">
+                    Obrigado / Obrigada
+                </div>
+
+                <div class="meaning">
+                    Obrigado is traditionally used
+                    by a male speaker; obrigada
+                    by a female speaker.
+                </div>
+
+            </div>
+
+
+            <button
+                class="speak"
+                onclick="speak('Obrigado')">
+
+                🔊
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- PLEASE -->
+
+    <div class="card phrase">
+
+        <div class="row">
+
+            <div>
+
+                <div class="english">
+                    Please
+                </div>
+
+                <div class="portuguese">
+                    Por favor
+                </div>
+
+            </div>
+
+
+            <button
+                class="speak"
+                onclick="speak('Por favor')">
+
+                🔊
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- YES -->
+
+    <div class="card phrase">
+
+        <div class="row">
+
+            <div>
+
+                <div class="english">
+                    Yes
+                </div>
+
+                <div class="portuguese">
+                    Sim
+                </div>
+
+            </div>
+
+
+            <button
+                class="speak"
+                onclick="speak('Sim')">
+
+                🔊
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- NO -->
+
+    <div class="card phrase">
+
+        <div class="row">
+
+            <div>
+
+                <div class="english">
+                    No
+                </div>
+
+                <div class="portuguese">
+                    Não
+                </div>
+
+            </div>
+
+
+            <button
+                class="speak"
+                onclick="speak('Não')">
+
+                🔊
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <button
+        class="primary"
+        onclick="startQuiz()">
+
+        Start Quiz →
+
+    </button>
+
+</section>
+
+
+<!-- =====================================================
+     QUIZ
+===================================================== -->
+
+<section
+    id="quiz"
+    class="screen hidden">
+
+    <span class="badge">
+
+        QUIZ
+
+    </span>
+
+
+    <h1>
+
+        How do you say
+        “Hello” in Portuguese?
+
+    </h1>
+
+
+    <button
+        class="option"
+        onclick="answer(this,false)">
+
+        Obrigado
+
+    </button>
+
+
+    <button
+        class="option"
+        onclick="answer(this,true)">
+
+        Olá
+
+    </button>
+
+
+    <button
+        class="option"
+        onclick="answer(this,false)">
+
+        Por favor
+
+    </button>
+
+
+    <p
+        id="quizResult"
+        class="muted">
+
+    </p>
+
+
+    <button
+        id="finishButton"
+        class="primary hidden"
+        onclick="completeLesson()">
+
+        Finish Lesson ✓
+
+    </button>
+
+</section>
+
+
+<!-- =====================================================
+     PROGRESS
+===================================================== -->
+
+<section
+    id="progress"
+    class="screen hidden">
+
+    <span class="badge">
+        YOUR PROGRESS
+    </span>
+
+
+    <h1>
+        Learning Progress
+    </h1>
+
+
+    <div class="card">
+
+        <div class="row">
+
+            <b>
+                A1 European Portuguese
+            </b>
+
+            <b id="progressPercent">
+                0%
+            </b>
+
+        </div>
+
+
+        <div
+            class="progress"
+            style="margin-top:12px">
+
+            <div
+                id="progressBar"
+                class="progress-bar">
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card row">
+
+        <div>
+
+            <b>
+                Lessons completed
+            </b>
+
+            <div class="muted">
+                A1 course
+            </div>
+
+        </div>
+
+        <b id="completedLessons">
+            0 / 12
+        </b>
+
+    </div>
+
+
+    <div class="card row">
+
+        <div>
+
+            <b>
+                Words & phrases
+            </b>
+
+            <div class="muted">
+                Learned so far
+            </div>
+
+        </div>
+
+        <b id="learnedWords">
+            0
+        </b>
+
+    </div>
+
+
+    <div class="card row">
+
+        <div>
+
+            <b>
+                🔥 Streak
+            </b>
+
+            <div class="muted">
+                Practice days
+            </div>
+
+        </div>
+
+        <b id="progressStreak">
+            1 day
+        </b>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     SETTINGS
+===================================================== -->
+
+<section
+    id="settings"
+    class="screen hidden">
+
+    <div style="
+        text-align:center;
+        margin-bottom:20px;
+    ">
+
+        <!-- SAME ICON -->
+
+        <div
+            style="
+                width:120px;
+                height:120px;
+                margin:auto;
+                border-radius:28px;
+                overflow:hidden;
+                box-shadow:0 8px 25px rgba(0,0,0,.18);
+            ">
+
+            <svg
+                width="100%"
+                height="100%"
+                viewBox="0 0 100 100"
+                xmlns="http://www.w3.org/2000/svg">
+
+                <defs>
+
+                    <linearGradient
+                        id="bg2"
+                        x1="0"
+                        y1="0"
+                        x2="1"
+                        y2="1">
+
+                        <stop
+                            offset="0%"
+                            stop-color="#11aaa0"/>
+
+                        <stop
+                            offset="100%"
+                            stop-color="#087d8d"/>
+
+                    </linearGradient>
+
+                </defs>
+
+                <rect
+                    width="100"
+                    height="100"
+                    rx="20"
+                    fill="url(#bg2)"/>
+
+                <circle
+                    cx="35"
+                    cy="35"
+                    r="25"
+                    fill="white"/>
+
+                <text
+                    x="35"
+                    y="40"
+                    text-anchor="middle"
+                    font-size="17"
+                    font-weight="bold"
+                    fill="#172033">
+
+                    EN
+
+                </text>
+
+                <circle
+                    cx="67"
+                    cy="55"
+                    r="24"
+                    fill="#61d348"/>
+
+                <text
+                    x="67"
+                    y="61"
+                    text-anchor="middle"
+                    font-size="17"
+                    font-weight="bold"
+                    fill="white">
+
+                    PT
+
+                </text>
+
+                <path
+                    d="M43 48 Q50 53 56 55"
+                    stroke="white"
+                    stroke-width="4"
+                    fill="none"/>
+
+                <polygon
+                    points="53,50 62,55 53,60"
+                    fill="white"/>
+
+                <path
+                    d="M25 78 Q40 70 50 78 Q60 70 75 78 L75 88 Q60 80 50 88 Q40 80 25 88Z"
+                    fill="white"/>
+
+            </svg>
+
+        </div>
+
+    </div>
+
+
+    <span class="badge">
+        PERSONAL SETTINGS
+    </span>
+
+
+    <h1>
+        My Portuguese
+    </h1>
+
+
+    <div class="card">
+
+        <b>
+            Learning direction
+        </b>
+
+        <p class="muted">
+            🇬🇧 English → 🇵🇹 European Portuguese
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <b>
+            Level
+        </b>
+
+        <p class="muted">
+            A1 • Beginner
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <b>
+            Voice
+        </b>
+
+        <p class="muted">
+            European Portuguese (pt-PT)
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <b>
+            Account
+        </b>
+
+        <p class="muted">
+            Personal mode — no email or account required.
+        </p>
+
+    </div>
+
+
+    <button
+        class="secondary"
+        onclick="resetProgress()">
+
+        Reset Learning Progress
+
+    </button>
+
+</section>
+
+
+<!-- =====================================================
+     BOTTOM NAVIGATION
+===================================================== -->
+
+<nav>
+
+    <button
+        id="navHome"
+        class="active"
+        onclick="show('home')">
+
+        🏠
+        <br>
+        Home
+
+    </button>
+
+
+    <button
+        id="navLearn"
+        onclick="show('lesson')">
+
+        📚
+        <br>
+        Learn
+
+    </button>
+
+
+    <button
+        id="navProgress"
+        onclick="show('progress')">
+
+        📊
+        <br>
+        Progress
+
+    </button>
+
+
+    <button
+        id="navSettings"
+        onclick="show('settings')">
+
+        ⚙️
+        <br>
+        Settings
+
+    </button>
+
+</nav>
+
+
+<div
+    id="toast"
+    class="toast">
+
+</div>
+
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   SAVED DATA
+===================================================== */
+
+let completed =
+    Number(
+        localStorage.getItem(
+            "evr_pt_completed"
+        ) || 0
+    );
+
+
+let words =
+    Number(
+        localStorage.getItem(
+            "evr_pt_words"
+        ) || 0
+    );
+
+
+let streak =
+    Number(
+        localStorage.getItem(
+            "evr_pt_streak"
+        ) || 1
+    );
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+function show(page) {
+
+    document
+        .querySelectorAll(".screen")
+        .forEach(function(screen) {
+
+            screen.classList.add("hidden");
+
+        });
+
+
+    document
+        .getElementById(page)
+        .classList.remove("hidden");
+
+
+    document
+        .querySelectorAll("nav button")
+        .forEach(function(button) {
+
+            button.classList.remove("active");
+
+        });
+
+
+    if (page === "home") {
+
+        document
+            .getElementById("navHome")
+            .classList.add("active");
+
+    }
+
+
+    if (page === "lesson") {
+
+        document
+            .getElementById("navLearn")
+            .classList.add("active");
+
+    }
+
+
+    if (page === "quiz") {
+
+        document
+            .getElementById("navLearn")
+            .classList.add("active");
+
+    }
+
+
+    if (page === "progress") {
+
+        document
+            .getElementById("navProgress")
+            .classList.add("active");
+
+    }
+
+
+    if (page === "settings") {
+
+        document
+            .getElementById("navSettings")
+            .classList.add("active");
+
+    }
+
+
+    updateProgress();
+
+
+    window.scrollTo(
+        0,
+        0
+    );
+
+}
+
+
+/* =====================================================
+   UPDATE PROGRESS
+===================================================== */
+
+function updateProgress() {
+
+    let percentage =
+        Math.round(
+            (completed / 12) * 100
+        );
+
+
+    document
+        .getElementById("homePercent")
+        .textContent =
+            percentage + "%";
+
+
+    document
+        .getElementById("progressPercent")
+        .textContent =
+            percentage + "%";
+
+
+    document
+        .getElementById("homeBar")
+        .style.width =
+            percentage + "%";
+
+
+    document
+        .getElementById("progressBar")
+        .style.width =
+            percentage + "%";
+
+
+    document
+        .getElementById("homeLessons")
+        .textContent =
+            completed +
+            " of 12 lessons completed";
+
+
+    document
+        .getElementById("completedLessons")
+        .textContent =
+            completed +
+            " / 12";
+
+
+    document
+        .getElementById("learnedWords")
+        .textContent =
+            words;
+
+
+    let streakText =
+        streak +
+        (streak === 1
+            ? " day"
+            : " days");
+
+
+    document
+        .getElementById("homeStreak")
+        .textContent =
+            streakText;
+
+
+    document
+        .getElementById("progressStreak")
+        .textContent =
+            streakText;
+
+}
+
+
+/* =====================================================
+   PORTUGUESE VOICE
+===================================================== */
+
+function speak(text) {
+
+    if (
+        !("speechSynthesis" in window)
+    ) {
+
+        alert(
+            "Your browser does not support voice playback."
+        );
+
+        return;
+
+    }
+
+
+    speechSynthesis.cancel();
+
+
+    let utterance =
+        new SpeechSynthesisUtterance(
+            text
+        );
+
+
+    let voices =
+        speechSynthesis.getVoices();
+
+
+    /*
+       Prefer European Portuguese.
+    */
+
+    let portugueseVoice =
+        voices.find(
+            function(voice) {
+
+                return /pt-PT/i.test(
+                    voice.lang
+                );
+
+            }
+        );
+
+
+    /*
+       Prefer a female voice if
+       the device provides one.
+    */
+
+    let femaleVoice =
+        voices.find(
+            function(voice) {
+
+                return (
+                    /pt-PT/i.test(
+                        voice.lang
+                    )
+                    &&
+                    /female|helena|joana|google|microsoft/i.test(
+                        voice.name
+                    )
+                );
+
+            }
+        );
+
+
+    if (femaleVoice) {
+
+        portugueseVoice =
+            femaleVoice;
+
+    }
+
+
+    if (portugueseVoice) {
+
+        utterance.voice =
+            portugueseVoice;
+
+    }
+
+
+    utterance.lang =
+        "pt-PT";
+
+
+    utterance.rate =
+        0.82;
+
+
+    utterance.pitch =
+        1.05;
+
+
+    speechSynthesis.speak(
+        utterance
+    );
+
+}
+
+
+/* =====================================================
+   QUIZ START
+===================================================== */
+
+function startQuiz() {
+
+    show("quiz");
+
+
+    document
+        .getElementById("quizResult")
+        .textContent =
+            "";
+
+
+    document
+        .getElementById("finishButton")
+        .classList.add(
+            "hidden"
+        );
+
+
+    document
+        .querySelectorAll(".option")
+        .forEach(
+            function(button) {
+
+                button.disabled =
+                    false;
+
+                button.className =
+                    "option";
+
+            }
+        );
+
+}
+
+
+/* =====================================================
+   QUIZ ANSWER
+===================================================== */
+
+function answer(
+    button,
+    correct
+) {
+
+    document
+        .querySelectorAll(".option")
+        .forEach(
+            function(option) {
+
+                option.disabled =
+                    true;
+
+            }
+        );
+
+
+    if (correct) {
+
+        button.classList.add(
+            "correct"
+        );
+
+
+        document
+            .getElementById("quizResult")
+            .textContent =
+                "✅ Correct! Olá means Hello.";
+
+    }
+
+    else {
+
+        button.classList.add(
+            "wrong"
+        );
+
+
+        document
+            .getElementById("quizResult")
+            .textContent =
+                "❌ Remember: Hello = Olá.";
+
+
+        document
+            .querySelectorAll(".option")[1]
+            .classList.add(
+                "correct"
+            );
+
+    }
+
+
+    document
+        .getElementById("finishButton")
+        .classList.remove(
+            "hidden"
+        );
+
+}
+
+
+/* =====================================================
+   COMPLETE LESSON
+===================================================== */
+
+function completeLesson() {
+
+    if (completed < 12) {
+
+        completed++;
+
+    }
+
+
+    words += 9;
+
+
+    localStorage.setItem(
+        "evr_pt_completed",
+        completed
+    );
+
+
+    localStorage.setItem(
+        "evr_pt_words",
+        words
+    );
+
+
+    localStorage.setItem(
+        "evr_pt_streak",
+        streak
+    );
+
+
+    updateProgress();
+
+
+    toast(
+        "Lesson completed 🎉"
+    );
+
+
+    show("progress");
+
+}
+
+
+/* =====================================================
+   RESET
+===================================================== */
+
+function resetProgress() {
+
+    let confirmation =
+        confirm(
+            "Reset all Portuguese learning progress?"
+        );
+
+
+    if (!confirmation) {
+
+        return;
+
+    }
+
+
+    completed = 0;
+
+    words = 0;
+
+    streak = 1;
+
+
+    localStorage.removeItem(
+        "evr_pt_completed"
+    );
+
+
+    localStorage.removeItem(
+        "evr_pt_words"
+    );
+
+
+    localStorage.removeItem(
+        "evr_pt_streak"
+    );
+
+
+    updateProgress();
+
+
+    toast(
+        "Progress reset"
+    );
+
+
+    show("home");
+
+}
+
+
+/* =====================================================
+   TOAST MESSAGE
+===================================================== */
+
+function toast(message) {
+
+    let element =
+        document.getElementById(
+            "toast"
+        );
+
+
+    element.textContent =
+        message;
+
+
+    element.style.display =
+        "block";
+
+
+    setTimeout(
+        function() {
+
+            element.style.display =
+                "none";
+
+        },
+        1800
+    );
+
+}
+
+
+/* =====================================================
+   INITIALIZE
+===================================================== */
+
+if (
+    "speechSynthesis" in window
+) {
+
+    speechSynthesis.getVoices();
+
+}
+
+
+updateProgress();
+
+</script>
+
+
+</body>
+
+</html>
