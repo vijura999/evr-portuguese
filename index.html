@@ -184,10 +184,88 @@ document.getElementById("phraseList").innerHTML=
 `<div class="card"><b>What you will learn</b><p class="muted">${GRAMMAR[x[0]]}</p></div>`+
 content.map(q=>`<div class="card phrase"><div><div class="en">${q[0]}</div><div class="pt">${q[1]}</div></div><button class="speak" onclick="speak('${q[1].replaceAll("'","\\'")}')">🔊</button></div>`).join("")+
 `<div class="card"><b>Lesson practice</b><p class="muted">Read each English sentence, say the Portuguese aloud, then use 🔊 to check your pronunciation. Review the vocabulary twice before taking the quiz.</p></div>`;show("lessonScreen")}
-function startLessonQuiz(){let pool=[];L[li][2].forEach(n=>lessonContent(n,L[li][0]).forEach(q=>pool.push({en:q[0],pt:q[1]})));let base=lessonContent(L[li][2][mi],L[li][0]);quiz=base.map(q=>({q,opts:[]}));while(quiz.length<10){let q=pool[Math.floor(Math.random()*pool.length)];if(!quiz.some(x=>x.q.en===q.en))quiz.push({q,opts:[]})}quiz=quiz.sort(()=>Math.random()-.5).slice(0,10);quiz.forEach(x=>{x.opts=[x.q.pt];while(x.opts.length<4){let o=pool[Math.floor(Math.random()*pool.length)].pt;if(!x.opts.includes(o))x.opts.push(o)}x.opts.sort(()=>Math.random()-.5)});qi=0;score=0;renderQuiz();show("quiz")}
-function renderQuiz(){let q=quiz[qi];document.getElementById("quizBadge").textContent=L[li][0]+" • QUIZ";document.getElementById("question").textContent='How do you say “'+q.q.en+'” in Portuguese?';document.getElementById("counter").textContent="Question "+(qi+1)+" / 10";document.getElementById("qscore").textContent=score+" correct";document.getElementById("qbar").style.width=(qi*10)+"%";document.getElementById("feedback").innerHTML="";document.getElementById("next").style.display="none";document.getElementById("options").innerHTML=q.opts.map(o=>`<button class="option" onclick="answer(this,'${o.replaceAll("'","\\'")}','${q.q.pt.replaceAll("'","\\'")}')">${o}</button>`).join("")}
-function answer(btn,a,c){if(btn.parentElement.dataset.done)return;btn.parentElement.dataset.done="1";document.querySelectorAll(".option").forEach(b=>b.disabled=true);if(a===c){score++;btn.classList.add("ok");document.getElementById("feedback").innerHTML='<div class="feedback" style="background:#eaf9ef;color:#168344">✓ Correct!</div>'}else{btn.classList.add("bad");document.querySelectorAll(".option").forEach(b=>{if(b.textContent===c)b.classList.add("ok")});document.getElementById("feedback").innerHTML='<div class="feedback" style="background:#fff0f3;color:#b5273e">✗ Correct answer: '+c+"</div>"}document.getElementById("qscore").textContent=score+" correct";document.getElementById("next").style.display="block";document.getElementById("next").textContent=qi===9?"See result →":"Next question →"}
-function nextQuestion(){if(qi===9){let k=id(li,mi);S.scores[k]=score;if(score>=6&&!S.done.includes(k))S.done.push(k);save();document.getElementById("resultScore").textContent=score+" / 10";document.getElementById("resultHead").textContent=score>=8?"Excellent!":score>=6?"Well done!":"Keep practising";document.getElementById("resultMsg").textContent=score>=6?"Lesson completed.":"Repeat the quiz and keep practising.";show("result")}else{qi++;renderQuiz()}}
+function startLessonQuiz(){
+  try{
+    let pool=[];
+    L[li][2].forEach(n=>lessonContent(n,L[li][0]).forEach(q=>pool.push({en:q[0],pt:q[1]})));
+    let base=lessonContent(L[li][2][mi],L[li][0]);
+    quiz=base.map(q=>({q,opts:[]}));
+    while(quiz.length<10){
+      let q=pool[Math.floor(Math.random()*pool.length)];
+      if(!quiz.some(x=>x.q.en===q.en)) quiz.push({q,opts:[]});
+    }
+    quiz=quiz.sort(()=>Math.random()-.5).slice(0,10);
+    quiz.forEach(x=>{
+      x.opts=[x.q.pt];
+      let attempts=0;
+      while(x.opts.length<4 && attempts<100){
+        let o=pool[Math.floor(Math.random()*pool.length)].pt;
+        if(!x.opts.includes(o) && o!==x.q.pt)x.opts.push(o);
+        attempts++;
+      }
+      if(x.opts.length<4){
+        for(const fallback of ["Obrigado","Olá","Por favor","Sim","Não","Adeus","Água"]){
+          if(!x.opts.includes(fallback) && fallback!==x.q.pt)x.opts.push(fallback);
+          if(x.opts.length===4)break;
+        }
+      }
+      x.opts.sort(()=>Math.random()-.5);
+    });
+    qi=0;score=0;
+    show("quiz");
+    renderQuiz();
+  }catch(e){
+    console.error(e);
+    alert("The quiz could not start. Please refresh the page and try again.");
+  }
+}
+function renderQuiz(){
+  if(!quiz.length)return;
+  let q=quiz[qi];
+  document.getElementById("quizBadge").textContent=L[li][0]+" • QUIZ";
+  document.getElementById("question").textContent='How do you say “'+q.q.en+'” in Portuguese?';
+  document.getElementById("counter").textContent="Question "+(qi+1)+" / 10";
+  document.getElementById("qscore").textContent=score+" correct";
+  document.getElementById("qbar").style.width=((qi)/10*100)+"%";
+  document.getElementById("feedback").innerHTML="";
+  document.getElementById("next").style.display="none";
+  document.getElementById("options").dataset.done="";
+  document.getElementById("options").innerHTML=q.opts.map((o,i)=>
+    `<button class="option" data-answer-index="${i}" onclick="answer(this)">${o}</button>`
+  ).join("");
+}
+function answer(btn){
+  const box=document.getElementById("options");
+  if(box.dataset.done==="1")return;
+  box.dataset.done="1";
+  document.querySelectorAll(".option").forEach(b=>b.disabled=true);
+  const q=quiz[qi];
+  const selected=q.opts[Number(btn.dataset.answerIndex)];
+  const correct=q.q.pt;
+  if(selected===correct){
+    score++;
+    btn.classList.add("ok");
+    document.getElementById("feedback").innerHTML='<div class="feedback" style="background:#eaf9ef;color:#168344">✓ Correct! '+correct+'</div>';
+  }else{
+    btn.classList.add("bad");
+    document.querySelectorAll(".option").forEach((b,i)=>{if(q.opts[i]===correct)b.classList.add("ok")});
+    document.getElementById("feedback").innerHTML='<div class="feedback" style="background:#fff0f3;color:#b5273e">✗ Correct answer: '+correct+'</div>';
+  }
+  document.getElementById("qscore").textContent=score+" correct";
+  document.getElementById("next").style.display="block";
+  document.getElementById("next").textContent=qi===9?"See result →":"Next question →";
+}
+function nextQuestion(){
+  if(qi===9){
+    let k=id(li,mi);S.scores[k]=score;
+    if(score>=6&&!S.done.includes(k))S.done.push(k);
+    save();
+    document.getElementById("resultScore").textContent=score+" / 10";
+    document.getElementById("resultHead").textContent=score>=8?"Excellent!":score>=6?"Well done!":"Keep practising";
+    document.getElementById("resultMsg").textContent=score>=6?"Lesson completed.":"Repeat the quiz and keep practising.";
+    show("result");
+  }else{qi++;renderQuiz();scrollTo(0,0)}
+}
 function nextLesson(){if(mi<11)openLesson(li,mi+1);else show("learn")}
 function continueLearning(){let found=false;for(let a=0;a<6&&!found;a++)for(let b=0;b<12;b++)if(!S.done.includes(id(a,b))){openLesson(a,b);found=true;break}if(!found)openLesson(0,0)}
 function renderNumbers(){let s=(document.getElementById("numberSearch").value||"").toLowerCase();document.getElementById("numberGrid").innerHTML=nums.slice(1).map((n,i)=>({n,i:i+1})).filter(x=>!s||String(x.i).includes(s)||x.n.includes(s)).map(x=>`<div class="number"><b>${x.i}</b>${x.n}<br><button onclick="speak('${x.n}')">🔊</button></div>`).join("")}
