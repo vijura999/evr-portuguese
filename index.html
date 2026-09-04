@@ -232,7 +232,15 @@ let S=JSON.parse(localStorage.getItem("EVR_PT_ICON_V8")||localStorage.getItem("E
 if(!Array.isArray(S.done))S.done=[];
 if(!S.scores||typeof S.scores!=="object")S.scores={};
 if(!Array.isArray(S.notes))S.notes=[];
-function save(){localStorage.setItem("EVR_PT_ICON_V8",JSON.stringify(S))}
+function save(){
+  try{
+    localStorage.setItem("EVR_PT_ICON_V8",JSON.stringify(S));
+    return true;
+  }catch(e){
+    alert("Could not save Notes in this browser. Please allow site storage and try again.");
+    return false;
+  }
+}
 function id(a,b){return L[a][0]+"-"+b}
 function show(x){
   document.querySelectorAll(".screen").forEach(e=>e.classList.remove("active"));
@@ -247,33 +255,37 @@ function show(x){
   if(x==="notes"){renderNoteSearch();renderSavedNotes();}
 }
 function speak(t){
-  const text=String(t||"").trim();
+  const text=String(t??"").trim();
+  if(!text){alert("There is no Portuguese text to play.");return;}
   const synth=window.speechSynthesis;
-  const Utter=window.SpeechSynthesisUtterance;
-  if(!synth||!Utter){alert("Speech playback is not supported by this browser.");return;}
-  if(!text)return;
-  const speakNow=()=>{
-    synth.cancel();
-    try{synth.resume();}catch(e){}
-    const u=new Utter(text);
-    u.lang="pt-PT";
-    u.rate=0.82;
-    u.pitch=1.04;
-    const voices=synth.getVoices? synth.getVoices():[];
-    const pt=voices.filter(v=>{const lang=(v.lang||"").toLowerCase();return lang==="pt-pt"||lang.startsWith("pt-pt-");});
-    const anyPt=voices.filter(v=>(v.lang||"").toLowerCase().startsWith("pt"));
-    u.voice=pt.find(v=>/female|femin|maria|joana|catarina|helena|ines|inês/i.test(v.name||""))||pt[0]||anyPt.find(v=>/female|femin|maria|joana|catarina|helena|ines|inês/i.test(v.name||""))||anyPt[0]||null;
-    u.onerror=()=>{try{u.voice=null;u.lang="pt-PT";synth.cancel();synth.speak(u);}catch(e){}};
-    synth.speak(u);
-  };
-  const voices=synth.getVoices?synth.getVoices():[];
-  if(voices.length){speakNow();}
-  else{
-    let done=false;
-    const once=()=>{if(done)return;done=true;synth.removeEventListener("voiceschanged",once);speakNow();};
-    if(synth.addEventListener)synth.addEventListener("voiceschanged",once);
-    setTimeout(once,500);
+  if(!synth || typeof window.SpeechSynthesisUtterance!=="function"){
+    alert("Speech playback is not supported by this browser.");
+    return;
   }
+  const play=()=>{
+    try{
+      synth.cancel();
+      const u=new SpeechSynthesisUtterance(text);
+      u.lang="pt-PT";
+      u.rate=0.82;
+      u.pitch=1.04;
+      const voices=synth.getVoices ? synth.getVoices() : [];
+      const ptpt=voices.filter(v=>String(v.lang||"").toLowerCase()==="pt-pt");
+      const pt=voices.filter(v=>String(v.lang||"").toLowerCase().startsWith("pt"));
+      u.voice=ptpt[0] || pt[0] || null;
+      synth.speak(u);
+    }catch(e){
+      alert("Could not start Portuguese speech. Please try again.");
+    }
+  };
+  const voices=synth.getVoices ? synth.getVoices() : [];
+  if(voices.length){play();}
+  else if(typeof synth.addEventListener==="function"){
+    let done=false;
+    const once=()=>{if(done)return;done=true;synth.removeEventListener("voiceschanged",once);play();};
+    synth.addEventListener("voiceschanged",once);
+    setTimeout(once,800);
+  }else{play();}
 }
 if(window.speechSynthesis&&window.speechSynthesis.addEventListener){window.speechSynthesis.addEventListener("voiceschanged",()=>{});}
 function renderLearn(){let g=document.getElementById("levelButtons");g.innerHTML=L.map((x,i)=>`<button class="level ${i===li?"sel":""}" onclick="li=${i};renderLearn()">${x[0]}</button>`).join("");let x=L[li],d=x[2].filter((_,i)=>S.done.includes(id(li,i))).length,p=Math.round(d/12*100);document.getElementById("levelTitle").textContent=x[0]+" "+x[1];document.getElementById("levelPct").textContent=p+"%";document.getElementById("levelBar").style.width=p+"%";document.getElementById("lessonList").innerHTML=x[2].map((n,i)=>`<div class="lesson ${S.done.includes(id(li,i))?"done":""}" onclick="openLesson(${li},${i})"><div class="circle">${S.done.includes(id(li,i))?"✓":i+1}</div><div><b>${n}</b><small>${lessonContent(n,x[0]).length} learning items • 10-question quiz</small></div><div class="arrow">›</div></div>`).join("")}
@@ -431,8 +443,8 @@ function renderNoteSearch(){
       <div class="pt">${esc(x.pt)}</div>
       <div class="source">${esc(x.level)} • ${esc(x.lesson)}</div>
       <div class="note-result-actions">
-        <button class="listen-note" onclick="speak(${JSON.stringify(x.pt)})">🔊 Listen</button>
-        <button class="save-note" onclick="saveCourseNote(${JSON.stringify(x.en)},${JSON.stringify(x.pt)},${JSON.stringify(x.level+" • "+x.lesson)})">💾 Save</button>
+        <button class="listen-note" onclick="speak(${esc(JSON.stringify(x.pt))})">🔊 Listen</button>
+        <button class="save-note" onclick="saveCourseNote(${esc(JSON.stringify(x.en))},${esc(JSON.stringify(x.pt))},${esc(JSON.stringify(x.level+" • "+x.lesson))})">💾 Save</button>
       </div>
     </div>`).join("");
 }
@@ -463,6 +475,10 @@ function saveCustomNote(){
   save();clearCustomNote();renderSavedNotes();
   alert("Note saved.");
 }
+function focusNoteInput(id){
+  const el=document.getElementById(id);
+  if(el)el.focus();
+}
 function clearCustomNote(){
   ["customNoteEn","customNotePt","customNoteExtra"].forEach(id=>{
     const el=document.getElementById(id);if(el)el.value="";
@@ -480,7 +496,7 @@ function renderSavedNotes(){
     <div class="note-pt">${esc(n.pt)}</div>
     ${n.extra?`<div class="note-extra">${esc(n.extra)}</div>`:""}
     <div class="saved-note-actions">
-      <button class="listen-note" onclick="speak(${JSON.stringify(n.pt)})">🔊 Listen</button>
+      <button class="listen-note" onclick="speak(${esc(JSON.stringify(n.pt))})">🔊 Listen</button>
       <button class="delete-note" onclick="deleteNote(${JSON.stringify(n.id)})">🗑️ Delete</button>
     </div>
   </div>`).join("");
