@@ -189,7 +189,7 @@ function startLessonQuiz(){
     let pool=[];
     L[li][2].forEach(n=>lessonContent(n,L[li][0]).forEach(q=>pool.push({en:q[0],pt:q[1]})));
     let base=lessonContent(L[li][2][mi],L[li][0]);
-    quiz=base.map(q=>({q,opts:[]}));
+    quiz=base.map(q=>({q:q,opts:[]}));
     while(quiz.length<10){
       let q=pool[Math.floor(Math.random()*pool.length)];
       if(!quiz.some(x=>x.q.en===q.en)) quiz.push({q,opts:[]});
@@ -223,7 +223,7 @@ function renderQuiz(){
   if(!quiz.length)return;
   let q=quiz[qi];
   document.getElementById("quizBadge").textContent=L[li][0]+" • QUIZ";
-  document.getElementById("question").textContent='How do you say “'+q.q.en+'” in Portuguese?';
+  document.getElementById("question").textContent='How do you say “'+q.q[0]+'” in Portuguese?';
   document.getElementById("counter").textContent="Question "+(qi+1)+" / 10";
   document.getElementById("qscore").textContent=score+" correct";
   document.getElementById("qbar").style.width=((qi)/10*100)+"%";
@@ -241,7 +241,7 @@ function answer(btn){
   document.querySelectorAll(".option").forEach(b=>b.disabled=true);
   const q=quiz[qi];
   const selected=q.opts[Number(btn.dataset.answerIndex)];
-  const correct=q.q.pt;
+  const correct=q.q[1];
   if(selected===correct){
     score++;
     btn.classList.add("ok");
