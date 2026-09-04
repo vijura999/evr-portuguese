@@ -246,7 +246,36 @@ function show(x){
   if(x==="numbers")renderNumbers();
   if(x==="notes"){renderNoteSearch();renderSavedNotes();}
 }
-function speak(t){if(!window.speechSynthesis)return; speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t);u.lang="pt-PT";u.rate=.82;u.pitch=1.04;let v=speechSynthesis.getVoices(),pt=v.filter(x=>(x.lang||"").toLowerCase().startsWith("pt-pt"));u.voice=pt.find(x=>/female|femin|maria|joana|catarina|helena|ines/i.test(x.name))||pt[0]||null;speechSynthesis.speak(u)}
+function speak(t){
+  const text=String(t||"").trim();
+  const synth=window.speechSynthesis;
+  const Utter=window.SpeechSynthesisUtterance;
+  if(!synth||!Utter){alert("Speech playback is not supported by this browser.");return;}
+  if(!text)return;
+  const speakNow=()=>{
+    synth.cancel();
+    try{synth.resume();}catch(e){}
+    const u=new Utter(text);
+    u.lang="pt-PT";
+    u.rate=0.82;
+    u.pitch=1.04;
+    const voices=synth.getVoices? synth.getVoices():[];
+    const pt=voices.filter(v=>{const lang=(v.lang||"").toLowerCase();return lang==="pt-pt"||lang.startsWith("pt-pt-");});
+    const anyPt=voices.filter(v=>(v.lang||"").toLowerCase().startsWith("pt"));
+    u.voice=pt.find(v=>/female|femin|maria|joana|catarina|helena|ines|inês/i.test(v.name||""))||pt[0]||anyPt.find(v=>/female|femin|maria|joana|catarina|helena|ines|inês/i.test(v.name||""))||anyPt[0]||null;
+    u.onerror=()=>{try{u.voice=null;u.lang="pt-PT";synth.cancel();synth.speak(u);}catch(e){}};
+    synth.speak(u);
+  };
+  const voices=synth.getVoices?synth.getVoices():[];
+  if(voices.length){speakNow();}
+  else{
+    let done=false;
+    const once=()=>{if(done)return;done=true;synth.removeEventListener("voiceschanged",once);speakNow();};
+    if(synth.addEventListener)synth.addEventListener("voiceschanged",once);
+    setTimeout(once,500);
+  }
+}
+if(window.speechSynthesis&&window.speechSynthesis.addEventListener){window.speechSynthesis.addEventListener("voiceschanged",()=>{});}
 function renderLearn(){let g=document.getElementById("levelButtons");g.innerHTML=L.map((x,i)=>`<button class="level ${i===li?"sel":""}" onclick="li=${i};renderLearn()">${x[0]}</button>`).join("");let x=L[li],d=x[2].filter((_,i)=>S.done.includes(id(li,i))).length,p=Math.round(d/12*100);document.getElementById("levelTitle").textContent=x[0]+" "+x[1];document.getElementById("levelPct").textContent=p+"%";document.getElementById("levelBar").style.width=p+"%";document.getElementById("lessonList").innerHTML=x[2].map((n,i)=>`<div class="lesson ${S.done.includes(id(li,i))?"done":""}" onclick="openLesson(${li},${i})"><div class="circle">${S.done.includes(id(li,i))?"✓":i+1}</div><div><b>${n}</b><small>${lessonContent(n,x[0]).length} learning items • 10-question quiz</small></div><div class="arrow">›</div></div>`).join("")}
 function openLesson(a,b){li=a;mi=b;let x=L[a],n=x[2][b];document.getElementById("headLevel").textContent=x[0];document.getElementById("lessonBadge").textContent=x[0]+" • LESSON "+(b+1)+" / 12";document.getElementById("lessonTitle").textContent=n;let content=lessonContent(n,x[0]);
 document.getElementById("phraseList").innerHTML=
