@@ -186,74 +186,88 @@ content.map(q=>`<div class="card phrase"><div><div class="en">${q[0]}</div><div 
 `<div class="card"><b>Lesson practice</b><p class="muted">Read each English sentence, say the Portuguese aloud, then use 🔊 to check your pronunciation. Review the vocabulary twice before taking the quiz.</p></div>`;show("lessonScreen")}
 function startLessonQuiz(){
   try{
-    let pool=[];
-    L[li][2].forEach(n=>lessonContent(n,L[li][0]).forEach(q=>pool.push({en:q[0],pt:q[1]})));
-    let base=lessonContent(L[li][2][mi],L[li][0]);
-    quiz=base.map(q=>({q:q,opts:[]}));
-    while(quiz.length<10){
-      let q=pool[Math.floor(Math.random()*pool.length)];
-      if(!quiz.some(x=>x.q.en===q.en)) quiz.push({q,opts:[]});
-    }
-    quiz=quiz.sort(()=>Math.random()-.5).slice(0,10);
-    quiz.forEach(x=>{
-      x.opts=[x.q.pt];
-      let attempts=0;
-      while(x.opts.length<4 && attempts<100){
-        let o=pool[Math.floor(Math.random()*pool.length)].pt;
-        if(!x.opts.includes(o) && o!==x.q.pt)x.opts.push(o);
-        attempts++;
-      }
-      if(x.opts.length<4){
-        for(const fallback of ["Obrigado","Olá","Por favor","Sim","Não","Adeus","Água"]){
-          if(!x.opts.includes(fallback) && fallback!==x.q.pt)x.opts.push(fallback);
-          if(x.opts.length===4)break;
-        }
-      }
-      x.opts.sort(()=>Math.random()-.5);
+    const lessonItems=lessonContent(L[li][2][mi],L[li][0])
+      .map(q=>({en:q[0],pt:q[1]}));
+    const allItems=[];
+    L[li][2].forEach(n=>{
+      lessonContent(n,L[li][0]).forEach(q=>allItems.push({en:q[0],pt:q[1]}));
     });
-    qi=0;score=0;
-    show("quiz");
+
+    // Always use the same {en, pt} object structure.
+    // This prevents undefined answers and mismatched questions/options.
+    const unique=[];
+    const used=new Set();
+    [...lessonItems, ...allItems.sort(()=>Math.random()-.5)].forEach(item=>{
+      const key=item.en+'|||'+item.pt;
+      if(!used.has(key)){
+        used.add(key);
+        unique.push(item);
+      }
+    });
+
+    // Prefer questions from the current lesson, then fill from the same level.
+    quiz=unique.slice(0,10).map(item=>({q:item,opts:[]}));
+
+    quiz.forEach(item=>{
+      const distractors=[];
+      const candidates=unique.filter(x=>x.pt!==item.q.pt).sort(()=>Math.random()-.5);
+      for(const candidate of candidates){
+        if(!distractors.includes(candidate.pt)) distractors.push(candidate.pt);
+        if(distractors.length===3) break;
+      }
+      item.opts=[item.q.pt,...distractors];
+      const fallback=['Olá','Bom dia','Obrigado','Obrigada','Por favor','Sim','Não','Adeus','Água','Casa de banho'];
+      for(const f of fallback){
+        if(item.opts.length>=4) break;
+        if(f!==item.q.pt && !item.opts.includes(f)) item.opts.push(f);
+      }
+      item.opts=item.opts.slice(0,4).sort(()=>Math.random()-.5);
+    });
+
+    qi=0;
+    score=0;
+    show('quiz');
     renderQuiz();
   }catch(e){
-    console.error(e);
-    alert("The quiz could not start. Please refresh the page and try again.");
+    console.error('Quiz error:',e);
+    alert('The quiz could not start. Please refresh the page and try again.');
   }
 }
 function renderQuiz(){
-  if(!quiz.length)return;
-  let q=quiz[qi];
-  document.getElementById("quizBadge").textContent=L[li][0]+" • QUIZ";
-  document.getElementById("question").textContent='How do you say “'+q.q[0]+'” in Portuguese?';
-  document.getElementById("counter").textContent="Question "+(qi+1)+" / 10";
-  document.getElementById("qscore").textContent=score+" correct";
-  document.getElementById("qbar").style.width=((qi)/10*100)+"%";
-  document.getElementById("feedback").innerHTML="";
-  document.getElementById("next").style.display="none";
-  document.getElementById("options").dataset.done="";
-  document.getElementById("options").innerHTML=q.opts.map((o,i)=>
-    `<button class="option" data-answer-index="${i}" onclick="answer(this)">${o}</button>`
-  ).join("");
+  if(!quiz.length) return;
+  const q=quiz[qi];
+  document.getElementById('quizBadge').textContent=L[li][0]+' • QUIZ';
+  document.getElementById('question').textContent='How do you say “'+q.q.en+'” in Portuguese?';
+  document.getElementById('counter').textContent='Question '+(qi+1)+' / 10';
+  document.getElementById('qscore').textContent=score+' correct';
+  document.getElementById('qbar').style.width=((qi+1)/10*100)+'%';
+  document.getElementById('feedback').innerHTML='';
+  document.getElementById('next').style.display='none';
+  document.getElementById('options').dataset.done='';
+  document.getElementById('options').innerHTML=q.opts.map((o,i)=>
+    '<button class="option" data-answer-index="'+i+'" onclick="answer(this)">'+o+'</button>'
+  ).join('');
 }
 function answer(btn){
-  const box=document.getElementById("options");
-  if(box.dataset.done==="1")return;
-  box.dataset.done="1";
-  document.querySelectorAll(".option").forEach(b=>b.disabled=true);
+  const box=document.getElementById('options');
+  if(box.dataset.done==='1') return;
+  box.dataset.done='1';
+  document.querySelectorAll('.option').forEach(b=>b.disabled=true);
   const q=quiz[qi];
   const selected=q.opts[Number(btn.dataset.answerIndex)];
-  const correct=q.q[1];
+  const correct=q.q.pt;
   if(selected===correct){
     score++;
-    btn.classList.add("ok");
-    document.getElementById("feedback").innerHTML='<div class="feedback" style="background:#eaf9ef;color:#168344">✓ Correct! '+correct+'</div>';
+    btn.classList.add('ok');
+    document.getElementById('feedback').innerHTML='<div class="feedback" style="background:#eaf9ef;color:#168344">✓ Correct! '+correct+'</div>';
   }else{
-    btn.classList.add("bad");
-    document.querySelectorAll(".option").forEach((b,i)=>{if(q.opts[i]===correct)b.classList.add("ok")});
-    document.getElementById("feedback").innerHTML='<div class="feedback" style="background:#fff0f3;color:#b5273e">✗ Correct answer: '+correct+'</div>';
+    btn.classList.add('bad');
+    document.querySelectorAll('.option').forEach((b,i)=>{if(q.opts[i]===correct)b.classList.add('ok')});
+    document.getElementById('feedback').innerHTML='<div class="feedback" style="background:#fff0f3;color:#b5273e">✗ Correct answer: '+correct+'</div>';
   }
-  document.getElementById("qscore").textContent=score+" correct";
-  document.getElementById("next").style.display="block";
-  document.getElementById("next").textContent=qi===9?"See result →":"Next question →";
+  document.getElementById('qscore').textContent=score+' correct';
+  document.getElementById('next').style.display='block';
+  document.getElementById('next').textContent=qi===9?'See result →':'Next question →';
 }
 function nextQuestion(){
   if(qi===9){
