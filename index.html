@@ -27,8 +27,27 @@ button{font:inherit;border:0;cursor:pointer}.primary,.secondary{width:100%;paddi
 .option{display:block;width:100%;text-align:left;padding:14px;margin:9px 0;border:1px solid var(--line);border-radius:13px;background:#fff;font-weight:800}.option.ok{background:#eaf9ef;border-color:#20a95b}.option.bad{background:#fff0f3;border-color:#df4960}.feedback{padding:13px;border-radius:13px;margin:10px 0;font-weight:800}
 .numbers{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.number{border:1px solid var(--line);border-radius:13px;padding:10px;text-align:center}.number b{display:block;color:var(--purple)}.number button{margin-top:6px;width:32px;height:32px;border-radius:50%;background:#eeeaff}
 .search{width:100%;padding:13px;border:1px solid var(--line);border-radius:13px;font-size:16px;margin:12px 0}
-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(760px,100%);height:72px;background:#fffffff7;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);z-index:10;padding-bottom:env(safe-area-inset-bottom)}nav button{background:none;color:#728096;font-size:10px;font-weight:800}nav button.active{color:var(--purple)}nav i{display:block;font-style:normal;font-size:20px;margin-bottom:3px}
+nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(760px,100%);height:72px;background:#fffffff7;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(6,1fr);z-index:10;padding-bottom:env(safe-area-inset-bottom)}nav button{background:none;color:#728096;font-size:10px;font-weight:800}nav button.active{color:var(--purple)}nav i{display:block;font-style:normal;font-size:20px;margin-bottom:3px}
 @media(max-width:430px){main{padding:16px 14px 95px}.logo{width:56px;height:56px}.brand{font-size:21px}.numbers{grid-template-columns:repeat(3,1fr)}h1{font-size:30px}}
+
+.notes-search{margin-bottom:8px}
+.note-tools{display:flex;gap:8px;flex-wrap:wrap}
+.note-tools .secondary,.note-tools .primary{width:auto;flex:1;min-width:120px}
+.note-result{border:1px solid var(--line);border-radius:15px;padding:13px;margin:9px 0;background:#fff}
+.note-result .source{font-size:11px;color:var(--muted);margin-top:5px}
+.note-result-actions{display:flex;gap:8px;margin-top:10px}
+.note-result-actions button{flex:1;padding:10px;border-radius:11px;font-weight:900}
+.note-result-actions .save-note{background:#eeeaff;color:var(--purple)}
+.note-result-actions .listen-note{background:#eef6f7;color:#087d83}
+.saved-note{border:1px solid var(--line);border-radius:15px;padding:13px;margin:9px 0;background:#fff}
+.saved-note .note-en{font-weight:900}
+.saved-note .note-pt{font-size:20px;color:var(--purple);font-weight:900;margin-top:4px}
+.saved-note .note-extra{font-size:13px;color:var(--muted);margin-top:5px;white-space:pre-wrap}
+.saved-note-actions{display:flex;gap:8px;margin-top:10px}
+.saved-note-actions button{flex:1;padding:10px;border-radius:11px;font-weight:900}
+.delete-note{background:#fff0f3;color:#c7344d}
+.empty-notes{padding:20px;text-align:center;color:var(--muted)}
+@media(max-width:430px){nav button{font-size:9px}nav i{font-size:18px}.note-tools .secondary,.note-tools .primary{min-width:100px}}
 </style>
 </head>
 <body>
@@ -56,13 +75,49 @@ nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(760px,
 
 <section id="result" class="screen"><span class="badge">QUIZ COMPLETE</span><h1 id="resultHead">Well done!</h1><div class="card" style="text-align:center"><div style="font-size:55px">🏆</div><h2 id="resultScore">0 / 10</h2><p class="muted" id="resultMsg"></p></div><button class="primary" onclick="startLessonQuiz()">Try again</button><div style="height:9px"></div><button class="secondary" onclick="nextLesson()">Finish & next lesson →</button></section>
 
+
+<section id="notes" class="screen">
+<span class="badge">MY NOTES</span>
+<h1>English → Portuguese</h1>
+<p class="muted">Search the course for a word or phrase, then save important translations for quick access later.</p>
+
+<div class="card">
+<b>Search the course</b>
+<input class="search notes-search" id="noteSearch" placeholder="Type English, e.g. hello, train, important" oninput="renderNoteSearch()">
+<div class="note-tools">
+<button class="secondary" onclick="clearNoteSearch()">Clear search</button>
+</div>
+<div id="noteSearchResults"></div>
+</div>
+
+<div class="card">
+<b>Save your own note</b>
+<p class="muted">Add an English word or phrase and its European Portuguese translation.</p>
+<input class="search" id="customNoteEn" placeholder="English">
+<input class="search" id="customNotePt" placeholder="European Portuguese (PT-PT)">
+<textarea class="search" id="customNoteExtra" rows="3" placeholder="Optional note or example"></textarea>
+<div class="note-tools">
+<button class="primary" onclick="saveCustomNote()">💾 Save note</button>
+<button class="secondary" onclick="clearCustomNote()">Clear</button>
+</div>
+</div>
+
+<div class="card">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+<b>Saved notes</b>
+<button class="secondary" style="width:auto;padding:8px 12px" onclick="deleteAllNotes()">Delete all</button>
+</div>
+<div id="savedNotes"></div>
+</div>
+</section>
+
 <section id="numbers" class="screen"><span class="badge">NUMBERS</span><h1>Numbers 1–100</h1><p class="muted">Complete European Portuguese number list with pronunciation.</p><input class="search" id="numberSearch" placeholder="Search number or Portuguese word" oninput="renderNumbers()"><div class="numbers" id="numberGrid"></div></section>
 
 <section id="progress" class="screen"><span class="badge">YOUR PROGRESS</span><h1>Learning Progress</h1><div class="card"><div style="display:flex;justify-content:space-between"><b>A1 → C2</b><b id="pPct">0%</b></div><div class="progress" style="margin-top:9px"><div class="bar" id="pBar"></div></div></div><div id="levelProgress"></div></section>
 
 <section id="settings" class="screen"><span class="badge">SETTINGS</span><h1>EVR Portuguese</h1><div class="card"><b>Course</b><p class="muted">English → European Portuguese (PT-PT)</p></div><div class="card"><b>Voice</b><p class="muted">The app requests a Portuguese (Portugal) voice from your device.</p><button class="secondary" onclick="speak('Olá. Bem-vindo ao EVR Portuguese.')">🔊 Test voice</button></div><div class="card"><b>Personal mode</b><p class="muted">No email or account. Progress is stored on this device.</p></div><div class="card"><button class="secondary" onclick="resetAll()">Reset all progress</button></div></section>
 </main>
-<nav><button id="n-home" onclick="show('home')"><i>🏠</i>Home</button><button id="n-learn" onclick="show('learn')"><i>📚</i>Learn</button><button id="n-numbers" onclick="show('numbers')"><i>🔢</i>Numbers</button><button id="n-progress" onclick="show('progress')"><i>📊</i>Progress</button><button id="n-settings" onclick="show('settings')"><i>⚙️</i>Settings</button></nav>
+<nav><button id="n-home" onclick="show('home')"><i>🏠</i>Home</button><button id="n-learn" onclick="show('learn')"><i>📚</i>Learn</button><button id="n-notes" onclick="show('notes')"><i>🔎</i>Notes</button><button id="n-numbers" onclick="show('numbers')"><i>🔢</i>Numbers</button><button id="n-progress" onclick="show('progress')"><i>📊</i>Progress</button><button id="n-settings" onclick="show('settings')"><i>⚙️</i>Settings</button></nav>
 </div>
 <script>
 const L=[
@@ -173,10 +228,24 @@ function quizPool(name,level){
   return lessonContent(name,level);
 }
 
-let S=JSON.parse(localStorage.getItem("EVR_PT_ICON_V6")||'{"done":[],"scores":{}}'),li=0,mi=0,qi=0,score=0,quiz=[];
-function save(){localStorage.setItem("EVR_PT_ICON_V6",JSON.stringify(S))}
+let S=JSON.parse(localStorage.getItem("EVR_PT_ICON_V8")||localStorage.getItem("EVR_PT_ICON_V7")||localStorage.getItem("EVR_PT_ICON_V6")||'{"done":[],"scores":{},"notes":[]}');
+if(!Array.isArray(S.done))S.done=[];
+if(!S.scores||typeof S.scores!=="object")S.scores={};
+if(!Array.isArray(S.notes))S.notes=[];
+function save(){localStorage.setItem("EVR_PT_ICON_V8",JSON.stringify(S))}
 function id(a,b){return L[a][0]+"-"+b}
-function show(x){document.querySelectorAll(".screen").forEach(e=>e.classList.remove("active"));document.getElementById(x).classList.add("active");document.querySelectorAll("nav button").forEach(e=>e.classList.remove("active"));let n=x==="lessonScreen"||x==="quiz"||x==="result"?"learn":x;let b=document.getElementById("n-"+n);if(b)b.classList.add("active");scrollTo(0,0);if(x==="learn")renderLearn();if(x==="progress")renderProgress();if(x==="numbers")renderNumbers()}
+function show(x){
+  document.querySelectorAll(".screen").forEach(e=>e.classList.remove("active"));
+  document.getElementById(x).classList.add("active");
+  document.querySelectorAll("nav button").forEach(e=>e.classList.remove("active"));
+  let n=x==="lessonScreen"||x==="quiz"||x==="result"?"learn":x;
+  let b=document.getElementById("n-"+n);if(b)b.classList.add("active");
+  scrollTo(0,0);
+  if(x==="learn")renderLearn();
+  if(x==="progress")renderProgress();
+  if(x==="numbers")renderNumbers();
+  if(x==="notes"){renderNoteSearch();renderSavedNotes();}
+}
 function speak(t){if(!window.speechSynthesis)return; speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t);u.lang="pt-PT";u.rate=.82;u.pitch=1.04;let v=speechSynthesis.getVoices(),pt=v.filter(x=>(x.lang||"").toLowerCase().startsWith("pt-pt"));u.voice=pt.find(x=>/female|femin|maria|joana|catarina|helena|ines/i.test(x.name))||pt[0]||null;speechSynthesis.speak(u)}
 function renderLearn(){let g=document.getElementById("levelButtons");g.innerHTML=L.map((x,i)=>`<button class="level ${i===li?"sel":""}" onclick="li=${i};renderLearn()">${x[0]}</button>`).join("");let x=L[li],d=x[2].filter((_,i)=>S.done.includes(id(li,i))).length,p=Math.round(d/12*100);document.getElementById("levelTitle").textContent=x[0]+" "+x[1];document.getElementById("levelPct").textContent=p+"%";document.getElementById("levelBar").style.width=p+"%";document.getElementById("lessonList").innerHTML=x[2].map((n,i)=>`<div class="lesson ${S.done.includes(id(li,i))?"done":""}" onclick="openLesson(${li},${i})"><div class="circle">${S.done.includes(id(li,i))?"✓":i+1}</div><div><b>${n}</b><small>${lessonContent(n,x[0]).length} learning items • 10-question quiz</small></div><div class="arrow">›</div></div>`).join("")}
 function openLesson(a,b){li=a;mi=b;let x=L[a],n=x[2][b];document.getElementById("headLevel").textContent=x[0];document.getElementById("lessonBadge").textContent=x[0]+" • LESSON "+(b+1)+" / 12";document.getElementById("lessonTitle").textContent=n;let content=lessonContent(n,x[0]);
@@ -282,11 +351,131 @@ function nextQuestion(){
 }
 function nextLesson(){if(mi<11)openLesson(li,mi+1);else show("learn")}
 function continueLearning(){let found=false;for(let a=0;a<6&&!found;a++)for(let b=0;b<12;b++)if(!S.done.includes(id(a,b))){openLesson(a,b);found=true;break}if(!found)openLesson(0,0)}
+
+function normText(t){
+  return String(t||"").toLocaleLowerCase("pt-PT").normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
+}
+function esc(t){
+  return String(t??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+}
+function courseDictionary(){
+  const out=[],seen=new Set();
+  for(let a=0;a<L.length;a++){
+    const level=L[a][0];
+    for(let b=0;b<L[a][2].length;b++){
+      const lesson=L[a][2][b];
+      const rows=lessonContent(lesson,level);
+      rows.forEach(r=>{
+        if(!Array.isArray(r)||r.length<2)return;
+        const en=String(r[0]??"").trim(),pt=String(r[1]??"").trim();
+        if(!en||!pt)return;
+        const key=normText(en)+"|"+normText(pt);
+        if(seen.has(key))return;
+        seen.add(key);
+        out.push({en,pt,level,lesson});
+      });
+    }
+  }
+  return out;
+}
+function renderNoteSearch(){
+  const input=document.getElementById("noteSearch");
+  const box=document.getElementById("noteSearchResults");
+  if(!input||!box)return;
+  const q=normText(input.value);
+  if(!q){
+    box.innerHTML='<div class="empty-notes">Type an English word or phrase to search the course.</div>';
+    return;
+  }
+  const words=q.split(/\s+/).filter(Boolean);
+  const results=courseDictionary().filter(x=>{
+    const e=normText(x.en),p=normText(x.pt);
+    return words.every(w=>e.includes(w)||p.includes(w));
+  }).slice(0,40);
+  if(!results.length){
+    box.innerHTML='<div class="empty-notes">No course translation found. You can add your own translation below.</div>';
+    return;
+  }
+  box.innerHTML='<p class="muted" style="margin-top:10px">'+results.length+' result'+(results.length===1?'':'s')+'</p>'+
+    results.map((x,i)=>`<div class="note-result">
+      <div class="en">${esc(x.en)}</div>
+      <div class="pt">${esc(x.pt)}</div>
+      <div class="source">${esc(x.level)} • ${esc(x.lesson)}</div>
+      <div class="note-result-actions">
+        <button class="listen-note" onclick="speak(${JSON.stringify(x.pt)})">🔊 Listen</button>
+        <button class="save-note" onclick="saveCourseNote(${JSON.stringify(x.en)},${JSON.stringify(x.pt)},${JSON.stringify(x.level+" • "+x.lesson)})">💾 Save</button>
+      </div>
+    </div>`).join("");
+}
+function clearNoteSearch(){
+  const el=document.getElementById("noteSearch");
+  if(el)el.value="";
+  renderNoteSearch();
+  if(el)el.focus();
+}
+function saveCourseNote(en,pt,source){
+  const key=normText(en)+"|"+normText(pt);
+  const exists=S.notes.some(n=>normText(n.en)+"|"+normText(n.pt)===key);
+  if(exists){alert("This translation is already saved.");return;}
+  S.notes.unshift({id:Date.now()+"-"+Math.random().toString(36).slice(2),en,pt,extra:"Source: "+source,source});
+  save();
+  renderSavedNotes();
+  alert("Translation saved to Notes.");
+}
+function saveCustomNote(){
+  const en=(document.getElementById("customNoteEn").value||"").trim();
+  const pt=(document.getElementById("customNotePt").value||"").trim();
+  const extra=(document.getElementById("customNoteExtra").value||"").trim();
+  if(!en||!pt){alert("Please enter both English and Portuguese.");return;}
+  const key=normText(en)+"|"+normText(pt);
+  const exists=S.notes.some(n=>normText(n.en)+"|"+normText(n.pt)===key);
+  if(exists){alert("This translation is already saved.");return;}
+  S.notes.unshift({id:Date.now()+"-"+Math.random().toString(36).slice(2),en,pt,extra,source:"My note"});
+  save();clearCustomNote();renderSavedNotes();
+  alert("Note saved.");
+}
+function clearCustomNote(){
+  ["customNoteEn","customNotePt","customNoteExtra"].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value="";
+  });
+}
+function renderSavedNotes(){
+  const box=document.getElementById("savedNotes");
+  if(!box)return;
+  if(!S.notes.length){
+    box.innerHTML='<div class="empty-notes">No saved notes yet. Search above and tap 💾 Save.</div>';
+    return;
+  }
+  box.innerHTML=S.notes.map(n=>`<div class="saved-note">
+    <div class="note-en">${esc(n.en)}</div>
+    <div class="note-pt">${esc(n.pt)}</div>
+    ${n.extra?`<div class="note-extra">${esc(n.extra)}</div>`:""}
+    <div class="saved-note-actions">
+      <button class="listen-note" onclick="speak(${JSON.stringify(n.pt)})">🔊 Listen</button>
+      <button class="delete-note" onclick="deleteNote(${JSON.stringify(n.id)})">🗑️ Delete</button>
+    </div>
+  </div>`).join("");
+}
+function deleteNote(noteId){
+  const note=S.notes.find(n=>n.id===noteId);
+  if(!note)return;
+  if(confirm('Delete this saved note?')){
+    S.notes=S.notes.filter(n=>n.id!==noteId);
+    save();renderSavedNotes();
+  }
+}
+function deleteAllNotes(){
+  if(!S.notes.length)return;
+  if(confirm("Delete all saved notes?")){
+    S.notes=[];save();renderSavedNotes();
+  }
+}
+
 function renderNumbers(){let s=(document.getElementById("numberSearch").value||"").toLowerCase();document.getElementById("numberGrid").innerHTML=nums.slice(1).map((n,i)=>({n,i:i+1})).filter(x=>!s||String(x.i).includes(s)||x.n.includes(s)).map(x=>`<div class="number"><b>${x.i}</b>${x.n}<br><button onclick="speak('${x.n}')">🔊</button></div>`).join("")}
 function renderProgress(){let d=S.done.length,p=Math.round(d/72*100);document.getElementById("pPct").textContent=p+"%";document.getElementById("pBar").style.width=p+"%";document.getElementById("levelProgress").innerHTML=L.map((x,a)=>{let n=x[2].filter((_,b)=>S.done.includes(id(a,b))).length;return`<div class="card"><div style="display:flex;justify-content:space-between"><b>${x[0]} ${x[1]}</b><b>${n}/12</b></div><div class="progress" style="margin-top:9px"><div class="bar" style="width:${n/12*100}%"></div></div></div>`}).join("")}
 function home(){let d=S.done.length,p=Math.round(d/72*100),scores=Object.values(S.scores),avg=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length/10*100):0;document.getElementById("doneCount").textContent=d;document.getElementById("wordCount").textContent=d*12;document.getElementById("avgScore").textContent=avg+"%";document.getElementById("overallPct").textContent=p+"%";document.getElementById("overallBar").style.width=p+"%";document.getElementById("overallText").textContent=d+" of 72 lessons completed";let a=0,b=0;for(;a<6;a++){for(b=0;b<12;b++)if(!S.done.includes(id(a,b)))break;if(b<12)break}if(a<6){document.getElementById("continueLevel").textContent=L[a][0];document.getElementById("continueTitle").textContent=L[a][2][b]}}
-function resetAll(){if(confirm("Reset all progress?")){S={done:[],scores:{}};save();home();show("home")}}
-home();renderLearn();renderNumbers();document.getElementById("n-home").classList.add("active");
+function resetAll(){if(confirm("Reset all progress? Saved notes will be kept.")){S.done=[];S.scores={};save();home();show("home")}}
+home();renderLearn();renderNumbers();renderSavedNotes();renderNoteSearch();document.getElementById("n-home").classList.add("active");
 </script>
 </body>
 </html>
