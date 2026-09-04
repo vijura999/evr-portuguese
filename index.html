@@ -288,6 +288,8 @@ function speak(t){
   }else{play();}
 }
 if(window.speechSynthesis&&window.speechSynthesis.addEventListener){window.speechSynthesis.addEventListener("voiceschanged",()=>{});}
+let li=0, mi=0, quiz=[], qi=0, score=0;
+
 function renderLearn(){let g=document.getElementById("levelButtons");g.innerHTML=L.map((x,i)=>`<button class="level ${i===li?"sel":""}" onclick="li=${i};renderLearn()">${x[0]}</button>`).join("");let x=L[li],d=x[2].filter((_,i)=>S.done.includes(id(li,i))).length,p=Math.round(d/12*100);document.getElementById("levelTitle").textContent=x[0]+" "+x[1];document.getElementById("levelPct").textContent=p+"%";document.getElementById("levelBar").style.width=p+"%";document.getElementById("lessonList").innerHTML=x[2].map((n,i)=>`<div class="lesson ${S.done.includes(id(li,i))?"done":""}" onclick="openLesson(${li},${i})"><div class="circle">${S.done.includes(id(li,i))?"✓":i+1}</div><div><b>${n}</b><small>${lessonContent(n,x[0]).length} learning items • 10-question quiz</small></div><div class="arrow">›</div></div>`).join("")}
 function openLesson(a,b){li=a;mi=b;let x=L[a],n=x[2][b];document.getElementById("headLevel").textContent=x[0];document.getElementById("lessonBadge").textContent=x[0]+" • LESSON "+(b+1)+" / 12";document.getElementById("lessonTitle").textContent=n;let content=lessonContent(n,x[0]);
 document.getElementById("phraseList").innerHTML=
