@@ -75,8 +75,8 @@ const L=[
 ];
 
 const P={
-"Greetings & Introductions":[["Hello","Olá"],["Good morning","Bom dia"],["Good afternoon","Boa tarde"],["Good evening / Good night","Boa noite"],["How are you?","Como está?"]],
-"Introducing Yourself":[["My name is…","Chamo-me…"],["I am from England","Sou de Inglaterra"],["I live in Portugal","Vivo em Portugal"],["Nice to meet you","Muito prazer"],["See you soon","Até breve"]],
+"Greetings & Introductions":[["Hello","Olá"],["Good morning","Bom dia"],["Good afternoon","Boa tarde"],["Good night","Boa noite"],["How are you?","Como está?"]],
+"Introducing Yourself":[["My name is…","Chamo-me…"],["I am from England","Sou de Inglaterra"],["I live in Portugal","Moro em Portugal"],["Nice to meet you","Prazer em conhecê-lo"],["See you soon","Até breve"]],
 "Numbers 1–20":[["One","um"],["Two","dois"],["Three","três"],["Ten","dez"],["Twenty","vinte"]],
 "Family":[["Mother","mãe"],["Father","pai"],["Brother","irmão"],["Sister","irmã"],["Family","família"]],
 "Food & Drinks":[["Water","água"],["Bread","pão"],["Coffee","café"],["Milk","leite"],["Apple","maçã"]],
@@ -157,14 +157,15 @@ C1:"Core grammar: advanced subjunctive, discourse markers, nominalisation, nuanc
 C2:"Core grammar: precision, stylistic variation, implicit meaning, rhetoric, idiomatic nuance and near-native register."
 };
 
-const PACKS={"Nuanced Opinions":[["Nuanced opinion","Opinião matizada"],["To some extent…","Até certo ponto…"],["It is partly true that…","É parcialmente verdade que…"],["There is a distinction between…","Há uma distinção entre…"],["It depends on how we interpret it.","Depende da forma como o interpretamos."],["That may be an oversimplification.","Isso pode ser uma simplificação excessiva."],["A more balanced view is…","Uma perspetiva mais equilibrada é…"],["There are valid arguments on both sides.","Há argumentos válidos de ambos os lados."],["The situation is more complicated than that.","A situação é mais complicada do que isso."],["I would qualify that statement.","Faria uma ressalva em relação a essa afirmação."],["The distinction is not always clear.","A distinção nem sempre é clara."],["The context makes a difference.","O contexto faz diferença."]],"A2 Conversation":[["What did you do yesterday?","O que fez ontem?"],["What are you going to do tomorrow?","O que vai fazer amanhã?"],["I went to work.","Fui trabalhar."],["I am going to stay at home.","Vou ficar em casa."],["I would like some water.","Queria água."],["Could you help me?","Pode ajudar-me?"],["I do not understand.","Não percebo."],["Could you repeat that?","Pode repetir?"],["What do you recommend?","O que recomenda?"],["I agree with you.","Concordo consigo."],["I am not sure.","Não tenho a certeza."],["See you tomorrow.","Até amanhã."]],"Narrating Experiences":[["Last year I travelled to Portugal.","No ano passado viajei para Portugal."],["I had a very good experience.","Tive uma experiência muito boa."],["When I arrived, it was raining.","Quando cheguei, estava a chover."],["We visited several places.","Visitámos vários lugares."],["I had never been there before.","Nunca tinha estado lá."],["At first, I was nervous.","No início, estava nervoso / nervosa."],["Later, I felt more comfortable.","Mais tarde, senti-me mais à vontade."],["We spent three days there.","Passámos três dias lá."],["It was an unforgettable trip.","Foi uma viagem inesquecível."],["I learned a lot from the experience.","Aprendi muito com a experiência."],["I would like to go back.","Gostaria de voltar."],["Looking back, I am glad I went.","Olhando para trás, fico contente por ter ido."]],"Work & Career":[["Career","Carreira"],["Job","Emprego"],["Company","Empresa"],["Department","Departamento"],["Position","Cargo"],["Experience","Experiência"],["Skills","Competências"],["Interview","Entrevista"],["Salary","Salário"],["Training","Formação"],["I am looking for a job.","Estou à procura de emprego."],["I have experience in this area.","Tenho experiência nesta área."]],"Opinions & Reasons":[["The reason is…","A razão é…"],["The main reason is…","A principal razão é…"],["I think it is useful.","Acho que é útil."],["I think it is necessary.","Acho que é necessário."],["In my view…","Na minha opinião…"],["I agree because…","Concordo porque…"],["I disagree because…","Discordo porque…"],["It seems reasonable.","Parece razoável."],["There are several reasons.","Há várias razões."],["For this reason…","Por esta razão…"],["That is why…","É por isso que…"],["What is your opinion?","Qual é a sua opinião?"]],"Giving Advice":[["You should…","Deve…"],["You should try…","Deve experimentar…"],["You could…","Poderia…"],["I recommend…","Recomendo…"],["I suggest…","Sugiro…"],["It would be better to…","Seria melhor…"],["If I were you…","Se eu fosse a si…"],["Take your time.","Não tenha pressa."],["You need to be careful.","Tem de ter cuidado."],["It is important to rest.","É importante descansar."],["Why not try again?","Porque não tenta outra vez?"],["My advice is to wait.","O meu conselho é esperar."]],"B1 Conversation":[["What do you think about it?","O que acha disso?"],["I see your point.","Percebo o seu ponto de vista."],["I am not completely sure.","Não tenho a certeza absoluta."],["It depends on the situation.","Depende da situação."],["That sounds interesting.","Isso parece interessante."],["I agree to some extent.","Concordo até certo ponto."],["Could you explain what you mean?","Pode explicar o que quer dizer?"],["Let us consider another option.","Vamos considerar outra opção."],["That is a good point.","É um bom ponto."],["I would prefer another solution.","Preferiria outra solução."],["What would you do?","O que faria?"],["Let us talk about it.","Vamos falar sobre isso."]],"Workplace Discussion":[["Workload","Carga de trabalho"],["Team member","Membro da equipa"],["Responsibility","Responsabilidade"],["Performance review","Avaliação de desempenho"],["Target","Objetivo"],["Budget","Orçamento"],["Deadline","Prazo"],["Priority","Prioridade"],["We need to discuss the deadline.","Precisamos de discutir o prazo."],["The team is working on the project.","A equipa está a trabalhar no projeto."],["We need more resources.","Precisamos de mais recursos."],["Let us review the proposal.","Vamos rever a proposta."]],"Society":[["Society","Sociedade"],["Community","Comunidade"],["Citizens","Cidadãos"],["Equality","Igualdade"],["Inequality","Desigualdade"],["Poverty","Pobreza"],["Education","Educação"],["Employment","Emprego"],["Public services","Serviços públicos"],["Social change","Mudança social"],["The issue affects society.","A questão afeta a sociedade."],["There are different perspectives.","Há diferentes perspetivas."]],"Education":[["Higher education","Ensino superior"],["University","Universidade"],["Degree","Curso superior"],["Research","Investigação"],["Lecture","Aula teórica"],["Assignment","Trabalho"],["Assessment","Avaliação"],["Qualification","Qualificação"],["Academic year","Ano letivo"],["Scholarship","Bolsa de estudo"],["Students need support.","Os estudantes precisam de apoio."],["The course is demanding.","O curso é exigente."]],"Culture":[["Cultural heritage","Património cultural"],["Tradition","Tradição"],["Custom","Costume"],["Language","Língua"],["Literature","Literatura"],["Music","Música"],["Art","Arte"],["Architecture","Arquitetura"],["Festival","Festival"],["Cultural identity","Identidade cultural"],["Cultural differences can be significant.","As diferenças culturais podem ser significativas."],["It is important to preserve traditions.","É importante preservar as tradições."]],"Economy":[["Economy","Economia"],["Economic growth","Crescimento económico"],["Inflation","Inflação"],["Investment","Investimento"],["Consumer","Consumidor"],["Market","Mercado"],["Company","Empresa"],["Income","Rendimento"],["Costs","Custos"],["Demand","Procura"],["Prices have increased.","Os preços aumentaram."],["The economy is changing.","A economia está a mudar."]],"Argumentation":[["Argument","Argumento"],["Claim","Afirmação"],["Evidence","Provas"],["Counterargument","Contra-argumento"],["Premise","Premissa"],["Conclusion","Conclusão"],["The evidence suggests…","As provas sugerem…"],["This argument is convincing.","Este argumento é convincente."],["There is another way to look at it.","Há outra forma de ver a questão."],["I would challenge that assumption.","Questionaria esse pressuposto."],["The argument depends on this point.","O argumento depende deste ponto."],["We need to distinguish two issues.","Precisamos de distinguir duas questões."]],"Idiomatic Portuguese":[["To be in a hurry","Ter pressa"],["To have a good time","Divertir-se"],["To be fed up","Estar farto / farta"],["To make sense","Fazer sentido"],["To keep an eye on","Ficar de olho em"],["To take something into account","Ter algo em conta"],["From time to time","De vez em quando"],["All of a sudden","De repente"],["At the end of the day","No fim de contas"],["In the meantime","Entretanto"],["It is up to you.","Cabe-lhe a si decidir."],["It is not worth it.","Não vale a pena."]],"Meetings":[["Agenda","Ordem de trabalhos"],["Minutes","Ata"],["Chairperson","Presidente da reunião"],["Participant","Participante"],["Proposal","Proposta"],["Decision","Decisão"],["Action point","Ação a realizar"],["Deadline","Prazo"],["Let us start the meeting.","Vamos começar a reunião."],["Could we move to the next point?","Podemos passar ao ponto seguinte?"],["I would like to add something.","Gostaria de acrescentar uma coisa."],["Let us summarise the decisions.","Vamos resumir as decisões."]],"Presentations":[["Presentation","Apresentação"],["Audience","Público"],["Introduction","Introdução"],["Main point","Ponto principal"],["Example","Exemplo"],["Conclusion","Conclusão"],["Slide","Diapositivo"],["Data","Dados"],["Today I will focus on…","Hoje vou concentrar-me em…"],["Let us look at this example.","Vejamos este exemplo."],["As you can see…","Como podem ver…"],["To conclude…","Para concluir…"]],"B2 Conversation":[["From my perspective…","Do meu ponto de vista…"],["I would put it differently.","Eu diria isso de outra forma."],["That is a valid point.","É um ponto de vista válido."],["I am inclined to agree.","Estou inclinado / inclinada a concordar."],["I have some reservations.","Tenho algumas reservas."],["That raises an important question.","Isso levanta uma questão importante."],["We need to look at the wider picture.","Precisamos de olhar para o panorama mais amplo."],["There is no simple answer.","Não há uma resposta simples."],["It is difficult to say for certain.","É difícil dizer com certeza."],["Let us return to the main issue.","Voltemos à questão principal."],["I see both sides of the argument.","Vejo os dois lados do argumento."],["We can agree to disagree.","Podemos concordar em discordar."]],"Politics & Society":[["Public policy","Política pública"],["Government","Governo"],["Parliament","Parlamento"],["Democracy","Democracia"],["Election","Eleição"],["Political debate","Debate político"],["Public opinion","Opinião pública"],["Civil rights","Direitos civis"],["Social policy","Política social"],["Political responsibility","Responsabilidade política"],["The policy has been criticised.","A política foi criticada."],["The debate remains complex.","O debate continua a ser complexo."]],"Literature":[["Novel","Romance"],["Poem","Poema"],["Short story","Conto"],["Author","Autor / autora"],["Narrator","Narrador / narradora"],["Character","Personagem"],["Plot","Enredo"],["Theme","Tema"],["Metaphor","Metáfora"],["Style","Estilo"],["The novel explores identity.","O romance explora a identidade."],["The narrator describes the scene.","O narrador descreve a cena."]],"Media Analysis":[["Media coverage","Cobertura mediática"],["Headline","Título"],["Article","Artigo"],["Editorial","Editorial"],["Source","Fonte"],["Bias","Enviesamento"],["Fact","Facto"],["Opinion","Opinião"],["Context","Contexto"],["Audience","Público"],["The article presents several arguments.","O artigo apresenta vários argumentos."],["The source should be checked.","A fonte deve ser verificada."]],"Formal Writing":[["Formal letter","Carta formal"],["Application","Candidatura"],["Request","Pedido"],["Statement","Declaração"],["Reference","Referência"],["Attachment","Anexo"],["Subject","Assunto"],["Introduction","Introdução"],["Main body","Corpo do texto"],["Closing","Despedida"],["I am writing to request…","Escrevo para solicitar…"],["Please find the requested document attached.","Segue em anexo o documento solicitado."]],"C1 Conversation":[["Would you mind clarifying that?","Importa-se de esclarecer isso?"],["I would like to make a distinction.","Gostaria de fazer uma distinção."],["That is not necessarily the case.","Isso não é necessariamente assim."],["There is a degree of uncertainty.","Existe um certo grau de incerteza."],["I take your point.","Compreendo o seu ponto de vista."],["I would like to add a qualification.","Gostaria de acrescentar uma ressalva."],["The issue is more complex than it appears.","A questão é mais complexa do que parece."],["We should consider the implications.","Devemos considerar as implicações."],["That interpretation is debatable.","Essa interpretação é discutível."],["Let us examine the evidence.","Vamos analisar as provas."],["I would not draw that conclusion yet.","Ainda não tiraria essa conclusão."],["That depends on how we define the term.","Isso depende da forma como definimos o termo."]],"Sophisticated Argument":[["It could be argued that…","Poder-se-ia argumentar que…"],["A possible objection is…","Uma possível objeção é…"],["This argument rests on the assumption that…","Este argumento assenta no pressuposto de que…"],["The distinction is important because…","A distinção é importante porque…"],["This does not necessarily imply that…","Isto não implica necessariamente que…"],["The evidence is far from conclusive.","As provas estão longe de ser conclusivas."],["A more nuanced view would be…","Uma perspetiva mais matizada seria…"],["This interpretation overlooks…","Esta interpretação ignora…"],["The issue warrants further consideration.","A questão merece uma análise mais aprofundada."],["There are grounds for questioning…","Há razões para questionar…"],["The argument is persuasive to some extent.","O argumento é convincente até certo ponto."],["Ultimately, the question is whether…","Em última análise, a questão é saber se…"]],"Advanced Idioms":[["To be on the same wavelength","Estar em sintonia"],["To get to the point","Ir direto ao assunto"],["To miss the point","Não perceber o essencial"],["To bear in mind","Ter em mente"],["To come in handy","Dar jeito"],["To be worth it","Valer a pena"],["To make a difference","Fazer a diferença"],["To go without saying","Ser evidente"],["By all means","Sem dúvida"],["For the time being","Por enquanto"],["In the long run","A longo prazo"],["As far as I am concerned","No que me diz respeito"]],"Professional Mastery":[["Leadership","Liderança"],["Strategic decision-making","Tomada de decisões estratégicas"],["Governance","Governação"],["Accountability","Responsabilização"],["Risk management","Gestão de riscos"],["Operational efficiency","Eficiência operacional"],["Business continuity","Continuidade do negócio"],["Performance indicators","Indicadores de desempenho"],["Long-term strategy","Estratégia a longo prazo"],["Professional judgement","Juízo profissional"],["We need to assess the risks carefully.","Precisamos de avaliar cuidadosamente os riscos."],["The decision has long-term implications.","A decisão tem implicações a longo prazo."]],"Academic Mastery":[["Literature review","Revisão da literatura"],["Research design","Desenho da investigação"],["Research methodology","Metodologia de investigação"],["Empirical evidence","Evidência empírica"],["Theoretical framework","Quadro teórico"],["Research findings","Resultados da investigação"],["Limitations","Limitações"],["Implications","Implicações"],["Further research","Investigação futura"],["Peer review","Revisão por pares"],["The findings support the hypothesis.","Os resultados sustentam a hipótese."],["Further research is needed.","É necessária mais investigação."]],"Negotiation Mastery":[["Negotiating position","Posição negocial"],["Mutual benefit","Benefício mútuo"],["Concession","Concessão"],["Counteroffer","Contraproposta"],["Terms and conditions","Termos e condições"],["Binding agreement","Acordo vinculativo"],["Confidentiality","Confidencialidade"],["Deadline for agreement","Prazo para chegar a acordo"],["We are prepared to compromise.","Estamos dispostos a chegar a um compromisso."],["This proposal is acceptable in principle.","Esta proposta é aceitável em princípio."],["We need further clarification.","Precisamos de mais esclarecimentos."],["Let us work towards an agreement.","Vamos trabalhar para chegar a um acordo."]],"Cultural Fluency":[["Cultural awareness","Consciência cultural"],["Social convention","Convenção social"],["Politeness","Cortesia"],["Formality","Formalidade"],["Hospitality","Hospitalidade"],["Local customs","Costumes locais"],["Sense of humour","Sentido de humor"],["Social context","Contexto social"],["Cultural reference","Referência cultural"],["Subtlety","Subtileza"],["It depends on the context.","Depende do contexto."],["A direct translation may sound unnatural.","Uma tradução literal pode soar pouco natural."]],"Critical Thinking":[["Critical thinking","Pensamento crítico"],["Assumption","Pressuposto"],["Premise","Premissa"],["Inference","Inferência"],["Implication","Implicação"],["Contradiction","Contradição"],["Credibility","Credibilidade"],["Reliability","Fiabilidade"],["Alternative explanation","Explicação alternativa"],["Logical conclusion","Conclusão lógica"],["We should question this assumption.","Devemos questionar este pressuposto."],["The evidence is not sufficient.","As provas não são suficientes."]],"Near-Native Conversation":[["As far as I can tell…","Tanto quanto posso perceber…"],["That being said…","Dito isto…"],["If anything…","Quando muito…"],["For what it is worth…","Seja como for…"],["Needless to say…","Escusado será dizer que…"],["As things stand…","Tal como estão as coisas…"],["I would not rule it out.","Não excluiria essa possibilidade."],["That remains to be seen.","Isso ainda está para ver."],["I could not agree more.","Não podia estar mais de acordo."],["I see where you are coming from.","Percebo o seu ponto de vista."],["That is beside the point.","Isso é irrelevante para a questão."],["Let us leave it at that.","Fiquemos por aqui."]],"C2 Mastery Review":[["To put it succinctly…","Para o dizer de forma sucinta…"],["Broadly speaking…","De um modo geral…"],["Strictly speaking…","Estritamente falando…"],["In retrospect…","Em retrospetiva…"],["In light of this…","À luz disto…"],["To a lesser extent…","Em menor grau…"],["By contrast…","Em contrapartida…"],["That said…","Dito isto…"],["It is worth bearing in mind that…","Importa ter em conta que…"],["This raises broader questions about…","Isto levanta questões mais amplas sobre…"],["The distinction is not merely semantic.","A distinção não é meramente semântica."],["The context determines the most appropriate expression.","O contexto determina a expressão mais adequada."]]};
 function lessonContent(name,level){
   let arr=[...(P[name]||[])];
   if(EXP[name]) arr.push(...EXP[name]);
-  if(PACKS[name]) arr.push(...PACKS[name]);
   const seen=new Set();
-  arr=arr.filter(x=>Array.isArray(x)&&x.length>=2&&String(x[0]).trim()&&String(x[1]).trim())
-    .filter(x=>{const key=String(x[0]).trim()+"|||"+String(x[1]).trim();if(seen.has(key))return false;seen.add(key);return true;});
+  arr=arr.filter(x=>{if(seen.has(x[0]))return false;seen.add(x[0]);return true});
+  if(arr.length<12){
+    const base=[["Practice aloud","Pratique em voz alta"],["Listen and repeat","Ouça e repita"],["Use it in a sentence","Use isto numa frase"],["Review the vocabulary","Reveja o vocabulário"]];
+    arr.push(...base.slice(0,12-arr.length));
+  }
   return arr.slice(0,16);
 }
 
@@ -172,8 +173,8 @@ function quizPool(name,level){
   return lessonContent(name,level);
 }
 
-let S=JSON.parse(localStorage.getItem("EVR_PT_FINAL_V8")||'{"done":[],"scores":{}}'),li=0,mi=0,qi=0,score=0,quiz=[];
-function save(){localStorage.setItem("EVR_PT_FINAL_V8",JSON.stringify(S))}
+let S=JSON.parse(localStorage.getItem("EVR_PT_ICON_V6")||'{"done":[],"scores":{}}'),li=0,mi=0,qi=0,score=0,quiz=[];
+function save(){localStorage.setItem("EVR_PT_ICON_V6",JSON.stringify(S))}
 function id(a,b){return L[a][0]+"-"+b}
 function show(x){document.querySelectorAll(".screen").forEach(e=>e.classList.remove("active"));document.getElementById(x).classList.add("active");document.querySelectorAll("nav button").forEach(e=>e.classList.remove("active"));let n=x==="lessonScreen"||x==="quiz"||x==="result"?"learn":x;let b=document.getElementById("n-"+n);if(b)b.classList.add("active");scrollTo(0,0);if(x==="learn")renderLearn();if(x==="progress")renderProgress();if(x==="numbers")renderNumbers()}
 function speak(t){if(!window.speechSynthesis)return; speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t);u.lang="pt-PT";u.rate=.82;u.pitch=1.04;let v=speechSynthesis.getVoices(),pt=v.filter(x=>(x.lang||"").toLowerCase().startsWith("pt-pt"));u.voice=pt.find(x=>/female|femin|maria|joana|catarina|helena|ines/i.test(x.name))||pt[0]||null;speechSynthesis.speak(u)}
@@ -183,41 +184,50 @@ document.getElementById("phraseList").innerHTML=
 `<div class="card"><b>What you will learn</b><p class="muted">${GRAMMAR[x[0]]}</p></div>`+
 content.map(q=>`<div class="card phrase"><div><div class="en">${q[0]}</div><div class="pt">${q[1]}</div></div><button class="speak" onclick="speak('${q[1].replaceAll("'","\\'")}')">🔊</button></div>`).join("")+
 `<div class="card"><b>Lesson practice</b><p class="muted">Read each English sentence, say the Portuguese aloud, then use 🔊 to check your pronunciation. Review the vocabulary twice before taking the quiz.</p></div>`;show("lessonScreen")}
-function shuffleArray(arr){
-  const a=arr.slice();
-  for(let i=a.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [a[i],a[j]]=[a[j],a[i]];
-  }
-  return a;
-}
-
 function startLessonQuiz(){
   try{
-    const lessonName=L[li][2][mi];
-    const source=lessonContent(lessonName,L[li][0])
-      .filter(q=>Array.isArray(q)&&q.length>=2&&String(q[0]).trim()&&String(q[1]).trim())
-      .map(q=>({en:String(q[0]).trim(),pt:String(q[1]).trim()}));
-    const unique=[];
-    const seen=new Set();
-    for(const item of source){
-      const key=item.en+'|||'+item.pt;
-      if(!seen.has(key)){seen.add(key);unique.push(item);}
-    }
-    if(unique.length<10){
-      alert('This lesson does not contain 10 verified learning pairs yet.');
-      return;
-    }
-    const selected=shuffleArray(unique).slice(0,10);
-    quiz=selected.map(q=>{
-      const distractors=shuffleArray(unique.filter(x=>x.en!==q.en && x.pt!==q.pt))
-        .map(x=>x.pt)
-        .filter((v,i,a)=>a.indexOf(v)===i)
-        .slice(0,3);
-      const opts=shuffleArray([q.pt,...distractors]);
-      return {q,opts};
+    const lessonItems=lessonContent(L[li][2][mi],L[li][0])
+      .map(q=>({en:q[0],pt:q[1]}));
+    const allItems=[];
+    L[li][2].forEach(n=>{
+      lessonContent(n,L[li][0]).forEach(q=>allItems.push({en:q[0],pt:q[1]}));
     });
-    qi=0; score=0; show('quiz'); renderQuiz();
+
+    // Always use the same {en, pt} object structure.
+    // This prevents undefined answers and mismatched questions/options.
+    const unique=[];
+    const used=new Set();
+    [...lessonItems, ...allItems.sort(()=>Math.random()-.5)].forEach(item=>{
+      const key=item.en+'|||'+item.pt;
+      if(!used.has(key)){
+        used.add(key);
+        unique.push(item);
+      }
+    });
+
+    // Prefer questions from the current lesson, then fill from the same level.
+    quiz=unique.slice(0,10).map(item=>({q:item,opts:[]}));
+
+    quiz.forEach(item=>{
+      const distractors=[];
+      const candidates=unique.filter(x=>x.pt!==item.q.pt).sort(()=>Math.random()-.5);
+      for(const candidate of candidates){
+        if(!distractors.includes(candidate.pt)) distractors.push(candidate.pt);
+        if(distractors.length===3) break;
+      }
+      item.opts=[item.q.pt,...distractors];
+      const fallback=['Olá','Bom dia','Obrigado','Obrigada','Por favor','Sim','Não','Adeus','Água','Casa de banho'];
+      for(const f of fallback){
+        if(item.opts.length>=4) break;
+        if(f!==item.q.pt && !item.opts.includes(f)) item.opts.push(f);
+      }
+      item.opts=item.opts.slice(0,4).sort(()=>Math.random()-.5);
+    });
+
+    qi=0;
+    score=0;
+    show('quiz');
+    renderQuiz();
   }catch(e){
     console.error('Quiz error:',e);
     alert('The quiz could not start. Please refresh the page and try again.');
@@ -226,7 +236,6 @@ function startLessonQuiz(){
 function renderQuiz(){
   if(!quiz.length) return;
   const q=quiz[qi];
-  if(!q || !q.q || !q.q.en || !q.q.pt || !Array.isArray(q.opts) || !q.opts.includes(q.q.pt)){ console.error('Invalid quiz question',q); return; }
   document.getElementById('quizBadge').textContent=L[li][0]+' • QUIZ';
   document.getElementById('question').textContent='How do you say “'+q.q.en+'” in Portuguese?';
   document.getElementById('counter').textContent='Question '+(qi+1)+' / 10';
