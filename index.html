@@ -49,6 +49,9 @@ nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(760px,
 .empty-notes{padding:20px;text-align:center;color:var(--muted)}
 @media(max-width:430px){nav button{font-size:9px}nav i{font-size:18px}.note-tools .secondary,.note-tools .primary{min-width:100px}}
 </style>
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon.png">
+<meta name="mobile-web-app-capable" content="yes">
 </head>
 <body>
 <div class="app">
@@ -523,6 +526,15 @@ function renderProgress(){let d=S.done.length,p=Math.round(d/72*100);document.ge
 function home(){let d=S.done.length,p=Math.round(d/72*100),scores=Object.values(S.scores),avg=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length/10*100):0;document.getElementById("doneCount").textContent=d;document.getElementById("wordCount").textContent=d*12;document.getElementById("avgScore").textContent=avg+"%";document.getElementById("overallPct").textContent=p+"%";document.getElementById("overallBar").style.width=p+"%";document.getElementById("overallText").textContent=d+" of 72 lessons completed";let a=0,b=0;for(;a<6;a++){for(b=0;b<12;b++)if(!S.done.includes(id(a,b)))break;if(b<12)break}if(a<6){document.getElementById("continueLevel").textContent=L[a][0];document.getElementById("continueTitle").textContent=L[a][2][b]}}
 function resetAll(){if(confirm("Reset all progress? Saved notes will be kept.")){S.done=[];S.scores={};save();home();show("home")}}
 home();renderLearn();renderNumbers();renderSavedNotes();renderNoteSearch();document.getElementById("n-home").classList.add("active");
+</script>
+
+<script>
+// EVR Portuguese offline/PWA support
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('./sw.js').catch(function () {});
+  });
+}
 </script>
 </body>
 </html>
