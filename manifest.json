@@ -1,0 +1,19 @@
+{
+  "name": "EVR Portuguese",
+  "short_name": "EVR Portuguese",
+  "description": "English to European Portuguese language learning app",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#6254f5",
+  "icons": [
+    {
+      "src": "./icon.png",
+      "sizes": "1254x1254",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
