@@ -24,7 +24,7 @@ h1{font-size:34px;line-height:1.08;margin:15px 0 10px}h2{margin:0 0 8px}.muted{c
 button{font:inherit;border:0;cursor:pointer}.primary,.secondary{width:100%;padding:14px;border-radius:14px;font-weight:900}.primary{background:linear-gradient(135deg,var(--purple),#806dff);color:#fff}.secondary{background:#eef0f5;color:var(--ink)}
 .levels{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.level{padding:13px;border:1px solid var(--line);border-radius:13px;background:#fff;font-weight:900}.level.sel{background:var(--purple);color:#fff}
 .lesson{display:flex;align-items:center;gap:12px;padding:13px 5px;border-bottom:1px solid #edf0f4}.lesson:last-child{border:0}.circle{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#eeeaff;color:var(--purple);font-weight:900;flex:none}.lesson.done .circle{background:#18a75b;color:#fff}.lesson b{display:block}.lesson small{color:var(--muted)}.arrow{margin-left:auto;color:var(--purple);font-size:22px}
-.phrase{display:flex;align-items:center;justify-content:space-between;gap:10px}.en{font-weight:800}.pt{font-size:22px;color:var(--purple);font-weight:900;margin-top:4px}.speak{width:45px;height:45px;border-radius:50%;background:var(--purple);color:#fff;font-size:19px;flex:none}
+.phrase{display:flex;align-items:center;justify-content:space-between;gap:10px}.en{font-weight:800}.pt{font-size:22px;color:var(--purple);font-weight:900;margin-top:4px}.speak{min-width:92px;min-height:48px;padding:8px 12px;border-radius:24px;background:var(--purple);color:#fff;font-size:14px;font-weight:900;flex:none}
 .option{display:block;width:100%;text-align:left;padding:14px;margin:9px 0;border:1px solid var(--line);border-radius:13px;background:#fff;font-weight:800}.option.ok{background:#eaf9ef;border-color:#20a95b}.option.bad{background:#fff0f3;border-color:#df4960}.feedback{padding:13px;border-radius:13px;margin:10px 0;font-weight:800}
 .numbers{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.number{border:1px solid var(--line);border-radius:13px;padding:10px;text-align:center}.number b{display:block;color:var(--purple)}.number button{margin-top:6px;width:32px;height:32px;border-radius:50%;background:#eeeaff}
 .search{width:100%;padding:13px;border:1px solid var(--line);border-radius:13px;font-size:16px;margin:12px 0}
@@ -116,7 +116,7 @@ nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(760px,
 
 <section id="progress" class="screen"><span class="badge">YOUR PROGRESS</span><h1>Learning Progress</h1><div class="card"><div style="display:flex;justify-content:space-between"><b>A1 → C2</b><b id="pPct">0%</b></div><div class="progress" style="margin-top:9px"><div class="bar" id="pBar"></div></div></div><div id="levelProgress"></div></section>
 
-<section id="settings" class="screen"><span class="badge">SETTINGS</span><h1>EVR Portuguese</h1><div class="card"><b>Course</b><p class="muted">English → European Portuguese (PT-PT)</p></div><div class="card"><b>Voice</b><p class="muted">The app requests a Portuguese (Portugal) voice from your device.</p><button class="secondary" onclick="speak('Olá. Bem-vindo ao EVR Portuguese.')">🔊 Test voice</button></div><div class="card"><b>Personal mode</b><p class="muted">No email or account. Progress is stored on this device.</p></div><div class="card"><button class="secondary" onclick="resetAll()">Reset all progress</button></div></section>
+<section id="settings" class="screen"><span class="badge">SETTINGS</span><h1>EVR Portuguese</h1><div class="card"><b>Course</b><p class="muted">English → European Portuguese (PT-PT)</p></div><div class="card"><b>Voice</b><p class="muted">The app requests a Portuguese (Portugal) voice from your device.</p><button class="secondary" onclick="playFromButton(this, 'Olá. Bem-vindo ao EVR Portuguese.')">🔊 Testar áudio</button></div><div class="card"><b>Personal mode</b><p class="muted">No email or account. Progress is stored on this device.</p></div><div class="card"><button class="secondary" onclick="resetAll()">Reset all progress</button></div></section>
 </main>
 <nav><button id="n-home" onclick="show('home')"><i>🏠</i>Home</button><button id="n-learn" onclick="show('learn')"><i>📚</i>Learn</button><button id="n-notes" onclick="show('notes')"><i>🔎</i>Notes</button><button id="n-numbers" onclick="show('numbers')"><i>🔢</i>Numbers</button><button id="n-progress" onclick="show('progress')"><i>📊</i>Progress</button><button id="n-settings" onclick="show('settings')"><i>⚙️</i>Settings</button></nav>
 </div>
@@ -255,40 +255,42 @@ function show(x){
   if(x==="numbers")renderNumbers();
   if(x==="notes"){renderNoteSearch();renderSavedNotes();}
 }
-function speak(t){
+function speak(t, button=null){
   const text = String(t ?? '').trim();
-  if (!text) return;
+  if (!text) { showAudioMessage('No text to play.'); return; }
   const synth = window.speechSynthesis;
-  if (!synth || typeof window.SpeechSynthesisUtterance !== 'function') {
-    alert('Audio speech is not supported in this browser view. Open this app in Safari on iPhone, or Chrome/Edge on a computer.');
+  if (!synth || !window.SpeechSynthesisUtterance) {
+    showAudioMessage('Speech is unavailable in this browser. Open the app in Safari (not an in-app preview) and try again.');
     return;
   }
-  // On iPhone/iPad, speech must be started directly from the tap handler.
-  // Do not wait asynchronously for voiceschanged, because iOS may block playback.
   try {
     synth.cancel();
-    if (typeof synth.resume === 'function') synth.resume();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'pt-PT';
-    utterance.rate = 0.82;
-    utterance.pitch = 1;
-    utterance.volume = 1;
-    const voices = typeof synth.getVoices === 'function' ? synth.getVoices() : [];
-    const normalize = value => String(value || '').toLowerCase().replace(/_/g, '-');
-    const voice = voices.find(v => normalize(v.lang) === 'pt-pt')
-      || voices.find(v => normalize(v.lang).startsWith('pt-pt-'))
-      || voices.find(v => normalize(v.lang) === 'pt')
-      || voices.find(v => normalize(v.lang).startsWith('pt-'));
-    if (voice) utterance.voice = voice;
-    utterance.onerror = function(event) {
-      console.warn('Speech playback error:', event && event.error ? event.error : 'unknown');
-    };
-    synth.speak(utterance);
-  } catch (error) {
-    console.error('Could not start speech playback:', error);
-    alert('Audio could not start. Check that your phone is not muted and try opening the app directly in Safari.');
+    // iOS Safari can leave speech paused after cancel; resume synchronously in the tap.
+    if (synth.paused && synth.resume) synth.resume();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'pt-PT'; u.rate = 0.86; u.pitch = 1; u.volume = 1;
+    const voices = synth.getVoices ? synth.getVoices() : [];
+    const norm = x => String(x || '').toLowerCase().replace(/_/g, '-');
+    const v = voices.find(x => norm(x.lang) === 'pt-pt') || voices.find(x => norm(x.lang).startsWith('pt-pt-')) || voices.find(x => norm(x.lang) === 'pt') || voices.find(x => norm(x.lang).startsWith('pt-'));
+    if (v) u.voice = v;
+    u.onstart = () => { setAudioStatus('🔊 Playing Portuguese audio…', false); if(button){button.dataset.oldText=button.textContent;button.textContent='▶ A tocar';} };
+    u.onend = () => { setAudioStatus('Audio ready', false); if(button) button.textContent='🔊 Ouvir'; };
+    u.onerror = (e) => { setAudioStatus('Audio failed: ' + (e.error || 'voice unavailable') + '. Check the device speech voice and try Safari.', true); if(button) button.textContent='🔊 Ouvir'; };
+    // Calling speak directly inside the button tap is important on iPhone.
+    synth.speak(u);
+    setAudioStatus('Starting audio…', false);
+  } catch (e) {
+    showAudioMessage('Could not start audio. Open this app in Safari and check that a Portuguese speech voice is installed.');
   }
 }
+function setAudioStatus(message, error){
+  let el=document.getElementById('audioStatus');
+  if(!el){el=document.createElement('div');el.id='audioStatus';el.setAttribute('role','status');el.style.cssText='position:fixed;left:12px;right:12px;bottom:82px;z-index:99;padding:10px 14px;border-radius:12px;background:#eaf8ee;color:#176534;border:1px solid #b9e2c5;font-size:13px;font-weight:700;text-align:center;';document.body.appendChild(el);}
+  el.textContent=message;el.style.background=error?'#fff0f0':'#eaf8ee';el.style.color=error?'#9b1c1c':'#176534';
+  clearTimeout(window.__audioStatusTimer);window.__audioStatusTimer=setTimeout(()=>{if(el)el.remove()},6000);
+}
+function showAudioMessage(message){setAudioStatus(message,true);}
+function playFromButton(button, text){ speak(text, button); }
 
 let li=0, mi=0, quiz=[], qi=0, score=0;
 
@@ -296,7 +298,7 @@ function renderLearn(){let g=document.getElementById("levelButtons");g.innerHTML
 function openLesson(a,b){li=a;mi=b;let x=L[a],n=x[2][b];document.getElementById("headLevel").textContent=x[0];document.getElementById("lessonBadge").textContent=x[0]+" • LESSON "+(b+1)+" / 12";document.getElementById("lessonTitle").textContent=n;let content=lessonContent(n,x[0]);
 document.getElementById("phraseList").innerHTML=
 `<div class="card"><b>What you will learn</b><p class="muted">${GRAMMAR[x[0]]}</p></div>`+
-content.map(q=>`<div class="card phrase"><div><div class="en">${q[0]}</div><div class="pt">${q[1]}</div></div><button class="speak" onclick="speak('${q[1].replaceAll("'","\\'")}')">🔊</button></div>`).join("")+
+content.map(q=>`<div class="card phrase"><div><div class="en">${q[0]}</div><div class="pt">${q[1]}</div></div><button class="speak" onclick="playFromButton(this, '${q[1].replaceAll("'","\\'")}')">🔊 Ouvir</button></div>`).join("")+
 `<div class="card"><b>Lesson practice</b><p class="muted">Read each English sentence, say the Portuguese aloud, then use 🔊 to check your pronunciation. Review the vocabulary twice before taking the quiz.</p></div>`;show("lessonScreen")}
 function startLessonQuiz(){
   try{
@@ -447,7 +449,7 @@ function renderNoteSearch(){
       <div class="pt">${esc(x.pt)}</div>
       <div class="source">${esc(x.level)} • ${esc(x.lesson)}</div>
       <div class="note-result-actions">
-        <button class="listen-note" onclick="speak(${esc(JSON.stringify(x.pt))})">🔊 Listen</button>
+        <button class="listen-note" onclick="playFromButton(this, ${esc(JSON.stringify(x.pt))})">🔊 Listen</button>
         <button class="save-note" onclick="saveCourseNote(${esc(JSON.stringify(x.en))},${esc(JSON.stringify(x.pt))},${esc(JSON.stringify(x.level+" • "+x.lesson))})">💾 Save</button>
       </div>
     </div>`).join("");
@@ -500,7 +502,7 @@ function renderSavedNotes(){
     <div class="note-pt">${esc(n.pt)}</div>
     ${n.extra?`<div class="note-extra">${esc(n.extra)}</div>`:""}
     <div class="saved-note-actions">
-      <button class="listen-note" onclick="speak(${esc(JSON.stringify(n.pt))})">🔊 Listen</button>
+      <button class="listen-note" onclick="playFromButton(this, ${esc(JSON.stringify(n.pt))})">🔊 Listen</button>
       <button class="delete-note" onclick="deleteNote(${JSON.stringify(n.id)})">🗑️ Delete</button>
     </div>
   </div>`).join("");
@@ -520,7 +522,7 @@ function deleteAllNotes(){
   }
 }
 
-function renderNumbers(){let s=(document.getElementById("numberSearch").value||"").toLowerCase();document.getElementById("numberGrid").innerHTML=nums.slice(1).map((n,i)=>({n,i:i+1})).filter(x=>!s||String(x.i).includes(s)||x.n.includes(s)).map(x=>`<div class="number"><b>${x.i}</b>${x.n}<br><button onclick="speak('${x.n}')">🔊</button></div>`).join("")}
+function renderNumbers(){let s=(document.getElementById("numberSearch").value||"").toLowerCase();document.getElementById("numberGrid").innerHTML=nums.slice(1).map((n,i)=>({n,i:i+1})).filter(x=>!s||String(x.i).includes(s)||x.n.includes(s)).map(x=>`<div class="number"><b>${x.i}</b>${x.n}<br><button onclick="playFromButton(this, '${x.n}')">🔊 Ouvir</button></div>`).join("")}
 function renderProgress(){let d=S.done.length,p=Math.round(d/72*100);document.getElementById("pPct").textContent=p+"%";document.getElementById("pBar").style.width=p+"%";document.getElementById("levelProgress").innerHTML=L.map((x,a)=>{let n=x[2].filter((_,b)=>S.done.includes(id(a,b))).length;return`<div class="card"><div style="display:flex;justify-content:space-between"><b>${x[0]} ${x[1]}</b><b>${n}/12</b></div><div class="progress" style="margin-top:9px"><div class="bar" style="width:${n/12*100}%"></div></div></div>`}).join("")}
 function home(){let d=S.done.length,p=Math.round(d/72*100),scores=Object.values(S.scores),avg=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length/10*100):0;document.getElementById("doneCount").textContent=d;document.getElementById("wordCount").textContent=d*12;document.getElementById("avgScore").textContent=avg+"%";document.getElementById("overallPct").textContent=p+"%";document.getElementById("overallBar").style.width=p+"%";document.getElementById("overallText").textContent=d+" of 72 lessons completed";let a=0,b=0;for(;a<6;a++){for(b=0;b<12;b++)if(!S.done.includes(id(a,b)))break;if(b<12)break}if(a<6){document.getElementById("continueLevel").textContent=L[a][0];document.getElementById("continueTitle").textContent=L[a][2][b]}}
 function resetAll(){if(confirm("Reset all progress? Saved notes will be kept.")){S.done=[];S.scores={};save();home();show("home")}}
