@@ -24,7 +24,7 @@ h1{font-size:34px;line-height:1.08;margin:15px 0 10px}h2{margin:0 0 8px}.muted{c
 button{font:inherit;border:0;cursor:pointer}.primary,.secondary{width:100%;padding:14px;border-radius:14px;font-weight:900}.primary{background:linear-gradient(135deg,var(--purple),#806dff);color:#fff}.secondary{background:#eef0f5;color:var(--ink)}
 .levels{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.level{padding:13px;border:1px solid var(--line);border-radius:13px;background:#fff;font-weight:900}.level.sel{background:var(--purple);color:#fff}
 .lesson{display:flex;align-items:center;gap:12px;padding:13px 5px;border-bottom:1px solid #edf0f4}.lesson:last-child{border:0}.circle{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#eeeaff;color:var(--purple);font-weight:900;flex:none}.lesson.done .circle{background:#18a75b;color:#fff}.lesson b{display:block}.lesson small{color:var(--muted)}.arrow{margin-left:auto;color:var(--purple);font-size:22px}
-.phrase{display:flex;align-items:center;justify-content:space-between;gap:10px}.en{font-weight:800}.pt{font-size:22px;color:var(--purple);font-weight:900;margin-top:4px}.speak{min-width:92px;min-height:48px;padding:8px 12px;border-radius:24px;background:var(--purple);color:#fff;font-size:14px;font-weight:900;flex:none}
+.phrase{display:flex;align-items:center;justify-content:space-between;gap:10px}.en{font-weight:800}.pt{font-size:22px;color:var(--purple);font-weight:900;margin-top:4px}.speak{min-width:104px;min-height:54px;padding:8px 12px;border-radius:24px;background:var(--purple);color:#fff;font-size:14px;font-weight:900;flex:none}
 .option{display:block;width:100%;text-align:left;padding:14px;margin:9px 0;border:1px solid var(--line);border-radius:13px;background:#fff;font-weight:800}.option.ok{background:#eaf9ef;border-color:#20a95b}.option.bad{background:#fff0f3;border-color:#df4960}.feedback{padding:13px;border-radius:13px;margin:10px 0;font-weight:800}
 .numbers{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.number{border:1px solid var(--line);border-radius:13px;padding:10px;text-align:center}.number b{display:block;color:var(--purple)}.number button{margin-top:6px;width:32px;height:32px;border-radius:50%;background:#eeeaff}
 .search{width:100%;padding:13px;border:1px solid var(--line);border-radius:13px;font-size:16px;margin:12px 0}
@@ -259,28 +259,59 @@ function speak(t, button=null){
   const text = String(t ?? '').trim();
   if (!text) { showAudioMessage('No text to play.'); return; }
   const synth = window.speechSynthesis;
-  if (!synth || !window.SpeechSynthesisUtterance) {
-    showAudioMessage('Speech is unavailable in this browser. Open the app in Safari (not an in-app preview) and try again.');
+  if (!synth || typeof window.SpeechSynthesisUtterance === 'undefined') {
+    showAudioMessage('Speech is not available in this browser. Open this app in Safari.');
     return;
   }
   try {
     synth.cancel();
-    // iOS Safari can leave speech paused after cancel; resume synchronously in the tap.
-    if (synth.paused && synth.resume) synth.resume();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'pt-PT'; u.rate = 0.86; u.pitch = 1; u.volume = 1;
-    const voices = synth.getVoices ? synth.getVoices() : [];
-    const norm = x => String(x || '').toLowerCase().replace(/_/g, '-');
-    const v = voices.find(x => norm(x.lang) === 'pt-pt') || voices.find(x => norm(x.lang).startsWith('pt-pt-')) || voices.find(x => norm(x.lang) === 'pt') || voices.find(x => norm(x.lang).startsWith('pt-'));
-    if (v) u.voice = v;
-    u.onstart = () => { setAudioStatus('🔊 Playing Portuguese audio…', false); if(button){button.dataset.oldText=button.textContent;button.textContent='▶ A tocar';} };
-    u.onend = () => { setAudioStatus('Audio ready', false); if(button) button.textContent='🔊 Ouvir'; };
-    u.onerror = (e) => { setAudioStatus('Audio failed: ' + (e.error || 'voice unavailable') + '. Check the device speech voice and try Safari.', true); if(button) button.textContent='🔊 Ouvir'; };
-    // Calling speak directly inside the button tap is important on iPhone.
-    synth.speak(u);
-    setAudioStatus('Starting audio…', false);
+    const makeUtterance = () => {
+      const u = new SpeechSynthesisUtterance(text);
+      const voices = synth.getVoices ? synth.getVoices() : [];
+      // Prefer European Portuguese, then any Portuguese voice. On iOS, assigning
+      // an unavailable voice can result in a silent utterance, so only assign a real voice.
+      const voice = voices.find(v => /^pt-PT$/i.test(v.lang))
+        || voices.find(v => /^pt([-_])/i.test(v.lang));
+      if (voice) { u.voice = voice; u.lang = voice.lang; }
+      else { u.lang = 'pt-PT'; }
+      u.rate = 0.78; u.pitch = 1; u.volume = 1;
+      let started = false;
+      u.onstart = () => {
+        started = true;
+        setAudioStatus('🔊 Speech started' + (voice ? ' (' + voice.name + ')' : ' (system Portuguese voice)'), false);
+        if (button) button.textContent = '▶ A tocar';
+      };
+      u.onend = () => {
+        setAudioStatus('Audio finished', false);
+        if (button) button.textContent = '🔊 Ouvir';
+      };
+      u.onerror = (e) => {
+        setAudioStatus('Speech engine error: ' + (e && e.error ? e.error : 'unknown') + '. Check that a Portuguese voice is installed in iPhone Settings.', true);
+        if (button) button.textContent = '🔊 Ouvir';
+      };
+      // A watchdog detects the common iOS case where onstart fires but no voice is audible.
+      window.__evrSpeechWatchdog = setTimeout(() => {
+        if (!started) {
+          setAudioStatus('Speech did not start. In iPhone Settings, download a Portuguese voice, then reopen Safari.', true);
+          if (button) button.textContent = '🔊 Ouvir';
+        }
+      }, 3500);
+      synth.speak(u);
+      // iOS Safari sometimes leaves the synthesis queue paused after cancel/reopen.
+      setTimeout(() => { try { if (synth.paused) synth.resume(); } catch(_){} }, 250);
+    };
+    // Safari may populate its voice list asynchronously; wait briefly and refresh it.
+    const voicesNow = synth.getVoices ? synth.getVoices() : [];
+    if (voicesNow.length) makeUtterance();
+    else {
+      let done = false;
+      const run = () => { if (done) return; done = true; synth.removeEventListener?.('voiceschanged', run); makeUtterance(); };
+      synth.addEventListener?.('voiceschanged', run);
+      setTimeout(run, 500);
+    }
+    setAudioStatus('Starting speech…', false);
   } catch (e) {
-    showAudioMessage('Could not start audio. Open this app in Safari and check that a Portuguese speech voice is installed.');
+    showAudioMessage('Could not start speech. Open in Safari and check iPhone audio output.');
   }
 }
 function setAudioStatus(message, error){
