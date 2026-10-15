@@ -256,88 +256,37 @@ function show(x){
   if(x==="notes"){renderNoteSearch();renderSavedNotes();}
 }
 function speak(t){
-  const text = String(t ?? "").trim();
-  if (!text) {
-    alert("There is no Portuguese text to play.");
-    return;
-  }
-
+  const text = String(t ?? '').trim();
+  if (!text) return;
   const synth = window.speechSynthesis;
-  if (!synth || typeof window.SpeechSynthesisUtterance !== "function") {
-    alert("Speech playback is not supported by this browser. Please open this app in Chrome, Edge, or Safari.");
+  if (!synth || typeof window.SpeechSynthesisUtterance !== 'function') {
+    alert('Audio speech is not supported in this browser view. Open this app in Safari on iPhone, or Chrome/Edge on a computer.');
     return;
   }
-
-  // Prefer a native European Portuguese voice, then any Portuguese voice.
-  function choosePortugueseVoice() {
-    const voices = synth.getVoices ? synth.getVoices() : [];
-    const norm = value => String(value || "").toLowerCase().replace(/_/g, "-");
-    return voices.find(v => norm(v.lang) === "pt-pt")
-      || voices.find(v => norm(v.lang).startsWith("pt-pt-"))
-      || voices.find(v => norm(v.lang) === "pt")
-      || voices.find(v => norm(v.lang).startsWith("pt-"))
-      || null;
-  }
-
-  function playWithAvailableVoice() {
-    try {
-      synth.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = "pt-PT";
-      // A slightly slower, neutral pace makes pronunciation clearer.
-      utterance.rate = 0.88;
-      utterance.pitch = 1.0;
-      utterance.volume = 1.0;
-
-      const voice = choosePortugueseVoice();
-      if (voice) {
-        utterance.voice = voice;
-        utterance.lang = voice.lang || "pt-PT";
-      }
-
-      utterance.onerror = function(event) {
-        // Do not show noisy alerts for a speech request cancelled by a new one.
-        if (event && event.error && event.error !== "canceled" && event.error !== "interrupted") {
-          console.warn("Portuguese speech playback error:", event.error);
-        }
-      };
-      synth.speak(utterance);
-    } catch (error) {
-      console.error("Could not start Portuguese speech:", error);
-      alert("Could not start Portuguese speech. Check your device's sound and try again.");
-    }
-  }
-
-  // Some browsers populate their voice list after the page first loads.
-  const voices = synth.getVoices ? synth.getVoices() : [];
-  if (voices.length) {
-    playWithAvailableVoice();
-  } else {
-    let finished = false;
-    let timeoutId;
-    const cleanup = () => {
-      if (finished) return;
-      finished = true;
-      if (timeoutId) clearTimeout(timeoutId);
-      if (typeof synth.removeEventListener === "function") {
-        synth.removeEventListener("voiceschanged", onVoicesChanged);
-      }
+  // On iPhone/iPad, speech must be started directly from the tap handler.
+  // Do not wait asynchronously for voiceschanged, because iOS may block playback.
+  try {
+    synth.cancel();
+    if (typeof synth.resume === 'function') synth.resume();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'pt-PT';
+    utterance.rate = 0.82;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+    const voices = typeof synth.getVoices === 'function' ? synth.getVoices() : [];
+    const normalize = value => String(value || '').toLowerCase().replace(/_/g, '-');
+    const voice = voices.find(v => normalize(v.lang) === 'pt-pt')
+      || voices.find(v => normalize(v.lang).startsWith('pt-pt-'))
+      || voices.find(v => normalize(v.lang) === 'pt')
+      || voices.find(v => normalize(v.lang).startsWith('pt-'));
+    if (voice) utterance.voice = voice;
+    utterance.onerror = function(event) {
+      console.warn('Speech playback error:', event && event.error ? event.error : 'unknown');
     };
-    const onVoicesChanged = () => {
-      cleanup();
-      playWithAvailableVoice();
-    };
-
-    if (typeof synth.addEventListener === "function") {
-      synth.addEventListener("voiceschanged", onVoicesChanged);
-      timeoutId = setTimeout(() => {
-        cleanup();
-        // Try playback even if this browser never fires voiceschanged.
-        playWithAvailableVoice();
-      }, 1200);
-    } else {
-      playWithAvailableVoice();
-    }
+    synth.speak(utterance);
+  } catch (error) {
+    console.error('Could not start speech playback:', error);
+    alert('Audio could not start. Check that your phone is not muted and try opening the app directly in Safari.');
   }
 }
 
