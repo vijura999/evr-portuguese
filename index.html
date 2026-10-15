@@ -260,58 +260,66 @@ function speak(t, button=null){
   if (!text) { showAudioMessage('No text to play.'); return; }
   const synth = window.speechSynthesis;
   if (!synth || typeof window.SpeechSynthesisUtterance === 'undefined') {
-    showAudioMessage('Speech is not available in this browser. Open this app in Safari.');
-    return;
+    showAudioMessage('Speech is not supported here. Open the app in Safari.'); return;
   }
+  if (window.__evrSpeechWatchdog) clearTimeout(window.__evrSpeechWatchdog);
   try {
+    // iOS Safari can silently drop an utterance if cancel() and speak() happen
+    // in the same event turn. Cancel first, then enqueue from the user gesture.
     synth.cancel();
-    const makeUtterance = () => {
-      const u = new SpeechSynthesisUtterance(text);
-      const voices = synth.getVoices ? synth.getVoices() : [];
-      // Prefer European Portuguese, then any Portuguese voice. On iOS, assigning
-      // an unavailable voice can result in a silent utterance, so only assign a real voice.
-      const voice = voices.find(v => /^pt-PT$/i.test(v.lang))
-        || voices.find(v => /^pt([-_])/i.test(v.lang));
-      if (voice) { u.voice = voice; u.lang = voice.lang; }
-      else { u.lang = 'pt-PT'; }
-      u.rate = 0.78; u.pitch = 1; u.volume = 1;
-      let started = false;
-      u.onstart = () => {
-        started = true;
-        setAudioStatus('🔊 Speech started' + (voice ? ' (' + voice.name + ')' : ' (system Portuguese voice)'), false);
-        if (button) button.textContent = '▶ A tocar';
-      };
-      u.onend = () => {
-        setAudioStatus('Audio finished', false);
-        if (button) button.textContent = '🔊 Ouvir';
-      };
-      u.onerror = (e) => {
-        setAudioStatus('Speech engine error: ' + (e && e.error ? e.error : 'unknown') + '. Check that a Portuguese voice is installed in iPhone Settings.', true);
-        if (button) button.textContent = '🔊 Ouvir';
-      };
-      // A watchdog detects the common iOS case where onstart fires but no voice is audible.
-      window.__evrSpeechWatchdog = setTimeout(() => {
-        if (!started) {
-          setAudioStatus('Speech did not start. In iPhone Settings, download a Portuguese voice, then reopen Safari.', true);
-          if (button) button.textContent = '🔊 Ouvir';
-        }
-      }, 3500);
-      synth.speak(u);
-      // iOS Safari sometimes leaves the synthesis queue paused after cancel/reopen.
-      setTimeout(() => { try { if (synth.paused) synth.resume(); } catch(_){} }, 250);
+    setAudioStatus('Preparing audio…', false);
+    const voices = synth.getVoices ? synth.getVoices() : [];
+    const ptPT = voices.find(v => /^pt[-_]PT$/i.test(v.lang));
+    const anyPT = voices.find(v => /^pt([-_])/i.test(v.lang));
+    const candidates = [];
+    if (ptPT) candidates.push({voice:ptPT, lang:ptPT.lang});
+    if (anyPT && anyPT !== ptPT) candidates.push({voice:anyPT, lang:anyPT.lang});
+    // Always finish with an unassigned system voice: some iOS voices announce
+    // onstart but produce no audible output when explicitly assigned.
+    candidates.push({voice:null, lang:'pt-PT'});
+    let attempt = 0, completed = false;
+    const resetButton = () => { if(button) button.textContent='🔊 Ouvir'; };
+    const tryNext = (reason) => {
+      if (completed) return;
+      if (attempt >= candidates.length) {
+        completed = true; resetButton();
+        setAudioStatus('No audible speech engine responded. Open in Safari and download a Portuguese voice in iPhone Settings → Accessibility → Spoken Content → Voices.', true);
+        return;
+      }
+      const choice = candidates[attempt++];
+      try {
+        synth.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = choice.lang || 'pt-PT';
+        if (choice.voice) u.voice = choice.voice;
+        u.rate = 0.85; u.pitch = 1; u.volume = 1;
+        let began = false;
+        u.onstart = () => {
+          began = true;
+          setAudioStatus('Speech engine started' + (choice.voice ? ' ('+choice.voice.name+')' : ' (system voice)')+'. If silent, trying another voice…', false);
+          if(button) button.textContent='▶ A tocar';
+          // iOS sometimes fires onstart for a silent assigned voice; advance if it never ends.
+          window.__evrSpeechWatchdog = setTimeout(() => { if (!completed && began) tryNext('silent'); }, Math.max(1800, Math.min(4500, text.length*65)));
+        };
+        u.onend = () => {
+          if (window.__evrSpeechWatchdog) clearTimeout(window.__evrSpeechWatchdog);
+          // onend is not proof of audible output, but avoid replaying successful speech.
+          completed = true; resetButton(); setAudioStatus('Speech finished. If you heard nothing, install a Portuguese voice and try again.', false);
+        };
+        u.onerror = () => {
+          if (window.__evrSpeechWatchdog) clearTimeout(window.__evrSpeechWatchdog);
+          tryNext('error');
+        };
+        synth.speak(u);
+        setTimeout(() => { try { if (synth.paused) synth.resume(); } catch(_){} }, 100);
+        // If onstart never fires, attempt the next voice rather than claiming it is playing.
+        window.__evrSpeechWatchdog = setTimeout(() => { if (!completed && !began) tryNext('no-start'); }, 2200);
+      } catch(_) { tryNext('exception'); }
     };
-    // Safari may populate its voice list asynchronously; wait briefly and refresh it.
-    const voicesNow = synth.getVoices ? synth.getVoices() : [];
-    if (voicesNow.length) makeUtterance();
-    else {
-      let done = false;
-      const run = () => { if (done) return; done = true; synth.removeEventListener?.('voiceschanged', run); makeUtterance(); };
-      synth.addEventListener?.('voiceschanged', run);
-      setTimeout(run, 500);
-    }
-    setAudioStatus('Starting speech…', false);
+    // Short delay after cancel is important on iPhone; remain inside this tap's flow.
+    setTimeout(() => tryNext('initial'), 120);
   } catch (e) {
-    showAudioMessage('Could not start speech. Open in Safari and check iPhone audio output.');
+    setAudioStatus('Could not start speech. Open in Safari and check iPhone audio output.', true);
   }
 }
 function setAudioStatus(message, error){
